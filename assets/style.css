@@ -1,0 +1,707 @@
+/* ============================================================
+   Office Basics — Professional Windows 10/11 Fluent Design
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600;700&display=swap');
+
+:root {
+  /* Canvas & Surface Colors (Windows 11 Neutral Palette) */
+  --bg: #F3F4F6;
+  --bg-soft: #EBF0F5;
+  --ink: #1F2937;
+  --ink-soft: #4B5563;
+  --ink-faint: #6B7280;
+  --surface: #FFFFFF;
+  --line: #E5E7EB;
+  --line-strong: #D1D5DB;
+
+  /* Official Microsoft Product & Brand Accents */
+  --windows: #0078D4;         /* Windows Fluent Blue */
+  --windows-soft: #E5F2FF;
+  --word: #185ABD;            /* Official Word Blue */
+  --word-soft: #E8F0FE;
+  --excel: #107C41;           /* Official Excel Green */
+  --excel-soft: #E6F4EA;
+  --powerpoint: #C43E1C;      /* Official PowerPoint Orange/Red */
+  --powerpoint-soft: #FCE8E6;
+  --howto: #6B4FA0;           /* Tech-Docs Accent Purple */
+  --howto-soft: #F3E8FF;
+
+  /* Geometry & Taskbar Sizing */
+  --radius-s: 6px;
+  --radius-m: 10px;
+  --radius-l: 14px;
+  --taskbar-h: 52px;
+
+  /* Native Windows System Typography */
+  --font-display: "Segoe UI Variable Display", "Segoe UI", -apple-system, sans-serif;
+  --font-body: "Segoe UI Variable Text", "Segoe UI", -apple-system, sans-serif;
+  --font-mono: "Cascadia Code", "Consolas", monospace;
+
+  /* Fluent Elevation & Shadows */
+  --shadow-card: 0 2px 4px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06);
+  --shadow-hover: 0 10px 20px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
+  --shadow-pop: 0 16px 32px -4px rgba(0, 0, 0, 0.18), 0 4px 8px -2px rgba(0, 0, 0, 0.08);
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.6;
+  padding-bottom: calc(var(--taskbar-h) + 28px);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  color: var(--ink);
+  margin: 0 0 0.4em 0;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+}
+
+p { margin: 0 0 1em 0; color: var(--ink-soft); }
+a { color: inherit; }
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+}
+
+/* ---------- Layout Shell ---------- */
+.shell {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 28px;
+}
+
+.topline {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 0 16px;
+  border-bottom: 1px solid var(--line);
+}
+.topline .wordmark {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  text-decoration: none;
+}
+.topline .wordmark b { color: var(--windows); font-weight: 700; }
+.breadcrumb {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  color: var(--ink-faint);
+}
+.breadcrumb a { text-decoration: none; color: var(--ink-faint); }
+.breadcrumb a:hover { color: var(--windows); }
+
+/* ---------- Ribbon Navigation Bar ---------- */
+.ribbon-nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ribbon-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: var(--radius-s);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ink-soft);
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.ribbon-item:hover {
+  background: var(--bg-soft);
+  color: var(--ink);
+}
+
+/* Dropdown Menu Wrapper */
+.ribbon-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+/* Desktop Hover Menu Popup */
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  min-width: 200px;
+  background: var(--surface);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-m);
+  padding: 8px 0;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+  list-style: none;
+  margin: 4px 0 0 0;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(8px);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 1000;
+}
+
+/* Hover Bridge prevents closing menu during cursor travel */
+.ribbon-dropdown::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  height: 8px;
+}
+
+.ribbon-dropdown:hover .dropdown-menu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.dropdown-menu a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 9px 16px;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--ink-soft);
+  text-decoration: none;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.dropdown-menu a:hover {
+  background: var(--bg-soft);
+  color: var(--ink);
+}
+
+/* Category Specific Hover Styling */
+.ribbon-dropdown.win-group .dropdown-menu a:hover { color: var(--windows); background: var(--windows-soft); }
+.ribbon-dropdown.word-group .dropdown-menu a:hover { color: var(--word); background: var(--word-soft); }
+.ribbon-dropdown.excel-group .dropdown-menu a:hover { color: var(--excel); background: var(--excel-soft); }
+.ribbon-dropdown.ppt-group .dropdown-menu a:hover { color: var(--powerpoint); background: var(--powerpoint-soft); }
+
+/* ---------- Mobile Hamburger Button ---------- */
+.mobile-menu-toggle {
+  display: none;
+  flex-direction: column;
+  justify-content: space-around;
+  width: 32px;
+  height: 32px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  z-index: 1100;
+}
+
+.mobile-menu-toggle .bar {
+  width: 100%;
+  height: 2px;
+  background-color: var(--ink);
+  border-radius: 2px;
+  transition: transform 0.25s ease, opacity 0.25s ease;
+}
+
+.mobile-menu-toggle.is-active .bar:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.mobile-menu-toggle.is-active .bar:nth-child(2) { opacity: 0; }
+.mobile-menu-toggle.is-active .bar:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* ---------- Hero Section ---------- */
+.hero {
+  padding: 48px 0 36px;
+}
+.hero .eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--windows);
+  margin-bottom: 16px;
+}
+.hero .eyebrow .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--windows); }
+.hero h1 {
+  font-size: clamp(32px, 4.5vw, 48px);
+  line-height: 1.1;
+  max-width: 16ch;
+  color: var(--ink);
+}
+.hero .lede {
+  max-width: 56ch;
+  font-size: 16.5px;
+  margin-top: 12px;
+  color: var(--ink-soft);
+}
+
+.search-launcher {
+  margin-top: 24px;
+  max-width: 560px;
+  position: relative;
+}
+.search-launcher input {
+  width: 100%;
+  font-family: var(--font-body);
+  font-size: 14.5px;
+  padding: 14px 18px 14px 44px;
+  border-radius: var(--radius-m);
+  border: 1px solid var(--line-strong);
+  border-bottom: 2px solid var(--line-strong);
+  background: var(--surface);
+  box-shadow: var(--shadow-card);
+  outline: none;
+  transition: all 0.2s ease;
+}
+.search-launcher input:focus {
+  border-color: var(--windows);
+  border-bottom-color: var(--windows);
+  box-shadow: 0 0 0 3px rgba(0, 120, 212, 0.15);
+}
+.search-launcher svg {
+  position: absolute;
+  left: 16px; top: 50%; transform: translateY(-50%);
+  width: 16px; height: 16px;
+  color: var(--ink-faint);
+}
+
+/* ---------- Tile Grid (Start Menu Tiles) ---------- */
+.tile-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin: 32px 0 44px;
+}
+
+.tile {
+  display: block;
+  text-decoration: none;
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-m);
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+.tile:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-hover);
+  border-color: var(--line-strong);
+}
+.tile:focus-visible { outline: 2px solid var(--windows); outline-offset: 2px; }
+
+.tile::before {
+  content: "";
+  position: absolute; inset: 0 0 auto 0; height: 3px;
+  background: var(--tile-color, var(--ink-faint));
+}
+.tile .tile-icon {
+  width: 36px; height: 36px;
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--tile-soft, var(--bg-soft));
+  color: var(--tile-color, var(--ink));
+  margin-bottom: 14px;
+}
+.tile .tile-icon svg { width: 20px; height: 20px; }
+.tile h3 { font-size: 17px; margin-bottom: 4px; font-weight: 600; }
+.tile .tile-desc { font-size: 13.5px; color: var(--ink-soft); margin-bottom: 16px; min-height: 38px; line-height: 1.45; }
+
+.tile-progress { display: flex; align-items: center; gap: 10px; }
+.bar-track {
+  flex: 1; height: 6px; border-radius: 999px; background: var(--bg-soft); overflow: hidden;
+  border: 1px solid var(--line);
+}
+.bar-fill { height: 100%; background: var(--tile-color, var(--windows)); border-radius: 999px; width: 0%; transition: width 0.4s cubic-bezier(0.1, 0.9, 0.2, 1); }
+.tile-progress .pct { font-family: var(--font-mono); font-size: 12px; font-weight: 600; color: var(--ink-faint); min-width: 32px; text-align: right; }
+
+.continue-strip {
+  margin: 0 0 36px;
+  padding: 14px 18px;
+  border-radius: var(--radius-m);
+  border: 1px solid var(--line-strong);
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 14px;
+  background: var(--surface);
+  box-shadow: var(--shadow-card);
+}
+.continue-strip.show { display: flex; }
+.continue-strip a { font-weight: 600; text-decoration: none; color: var(--windows); border-bottom: 1px solid transparent; }
+.continue-strip a:hover { border-bottom-color: var(--windows); }
+
+/* ---------- Section Headers & Pages ---------- */
+.section-head {
+  display: flex; align-items: baseline; justify-content: space-between;
+  margin: 40px 0 16px;
+}
+.section-head h2 { font-size: 20px; font-weight: 600; }
+.section-head .count { font-family: var(--font-mono); font-size: 12px; color: var(--ink-faint); }
+
+.course-hero {
+  padding: 36px 0 12px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 28px;
+}
+.course-hero .course-tag {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--font-mono); font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;
+  padding: 4px 12px; border-radius: 999px;
+  color: var(--c, var(--ink)); background: var(--cs, var(--bg-soft));
+  margin-bottom: 14px;
+}
+.course-hero h1 { font-size: clamp(28px, 3.8vw, 36px); }
+.course-hero .lede { max-width: 60ch; font-size: 15.5px; }
+
+.course-progress-row {
+  display: flex; align-items: center; gap: 14px; margin: 20px 0 24px;
+  font-family: var(--font-mono); font-size: 12.5px; color: var(--ink-soft);
+}
+.course-progress-row .bar-track { max-width: 320px; }
+
+/* ---------- Lesson List Accordions ---------- */
+.lesson-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 44px; }
+
+.lesson {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-m);
+  overflow: hidden;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.lesson[open] { border-color: var(--line-strong); box-shadow: var(--shadow-card); }
+
+.lesson summary {
+  list-style: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 18px;
+  user-select: none;
+}
+.lesson summary::-webkit-details-marker { display: none; }
+
+.lesson .num {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--c, var(--ink-faint));
+  background: var(--cs, var(--bg-soft));
+  border-radius: 6px;
+  width: 28px; height: 28px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.lesson summary h3 { font-size: 15px; margin: 0; flex: 1; font-weight: 600; }
+.lesson summary .chev {
+  width: 16px; height: 16px; color: var(--ink-faint);
+  transition: transform 0.15s ease;
+  flex-shrink: 0;
+}
+.lesson[open] summary .chev { transform: rotate(90deg); }
+
+.lesson .mark-complete {
+  display: flex; align-items: center; gap: 6px;
+  font-family: var(--font-mono); font-size: 11.5px; color: var(--ink-faint);
+  padding: 4px 10px; border-radius: 6px;
+  border: 1px solid var(--line);
+  flex-shrink: 0;
+  transition: all 0.15s ease;
+}
+.lesson .mark-complete:hover { border-color: var(--line-strong); background: var(--bg-soft); }
+.lesson .mark-complete input { accent-color: var(--c, var(--windows)); width: 14px; height: 14px; cursor: pointer; }
+.lesson.done .mark-complete { color: var(--c, var(--windows)); background: var(--cs, var(--bg-soft)); border-color: transparent; font-weight: 600; }
+
+.lesson-body {
+  padding: 8px 18px 20px 62px;
+  border-top: 1px solid var(--line);
+  margin-top: -1px;
+}
+.lesson-body p { font-size: 14.5px; }
+.lesson-body ul, .lesson-body ol { margin: 0 0 14px 0; padding-left: 20px; font-size: 14.5px; color: var(--ink-soft); }
+.lesson-body li { margin-bottom: 6px; }
+.lesson-body h4 { font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-faint); margin: 16px 0 8px; font-family: var(--font-mono); font-weight: 600; }
+
+.tip {
+  background: var(--cs, var(--bg-soft));
+  border-left: 3px solid var(--c, var(--windows));
+  border-radius: 0 var(--radius-s) var(--radius-s) 0;
+  padding: 12px 14px;
+  font-size: 13.5px;
+  color: var(--ink-soft);
+  margin: 14px 0;
+}
+.tip b { color: var(--ink); }
+
+/* Keycap Chips for Shortcuts */
+.keys { display: inline-flex; gap: 4px; align-items: center; vertical-align: middle; }
+kbd {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  background: var(--surface);
+  border: 1px solid var(--line-strong);
+  border-bottom: 2px solid var(--line-strong);
+  border-radius: 4px;
+  padding: 1px 6px;
+  color: var(--ink);
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+}
+
+/* ---------- How-To Database Search & Cards ---------- */
+.filter-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px; }
+.filter-chip {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--line-strong);
+  background: var(--surface);
+  cursor: pointer;
+  color: var(--ink-soft);
+  transition: all 0.15s ease;
+}
+.filter-chip:hover { border-color: var(--ink); }
+.filter-chip.active { background: var(--ink); color: #FFF; border-color: var(--ink); }
+
+.fix-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+  margin-bottom: 40px;
+}
+
+.fix-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-m);
+  padding: 18px 20px;
+  box-shadow: var(--shadow-card);
+}
+.fix-card .fix-app {
+  font-family: var(--font-mono); font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--c, var(--ink-faint));
+  margin-bottom: 6px;
+}
+.fix-card h3 { font-size: 15px; margin-bottom: 8px; font-weight: 600; }
+.fix-card ol { margin: 10px 0 0; padding-left: 18px; font-size: 13.5px; color: var(--ink-soft); }
+.fix-card li { margin-bottom: 5px; }
+.fix-card.hidden { display: none; }
+
+.no-results { display: none; color: var(--ink-faint); font-family: var(--font-mono); font-size: 13.5px; padding: 20px 0; }
+.no-results.show { display: block; }
+
+/* ---------- Windows 11 Fluent Taskbar ---------- */
+.taskbar {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  height: var(--taskbar-h);
+  background: rgba(32, 36, 42, 0.88);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  gap: 4px;
+}
+.taskbar .tb-btn {
+  height: 38px;
+  display: flex; align-items: center; gap: 8px;
+  padding: 0 12px;
+  border-radius: 6px;
+  color: #F3F4F6;
+  text-decoration: none;
+  font-family: var(--font-body);
+  font-size: 13px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  position: relative;
+  transition: background-color 0.15s ease;
+}
+.taskbar .tb-btn:hover { background: rgba(255, 255, 255, 0.08); }
+.taskbar .tb-btn.active { background: rgba(255, 255, 255, 0.14); }
+.taskbar .tb-btn.active::after {
+  content: ""; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+  width: 14px; height: 3px; border-radius: 3px; background: var(--c, #60A5FA);
+}
+.taskbar .tb-btn svg { width: 16px; height: 16px; flex-shrink: 0; }
+.taskbar .tb-btn .label { display: none; }
+
+.taskbar .tb-start { font-weight: 600; }
+.taskbar .tb-start svg { color: #60A5FA; }
+
+.taskbar .tb-spacer { flex: 1; }
+
+.taskbar .tb-tray {
+  display: flex; align-items: center; gap: 14px;
+  padding: 0 12px;
+  font-family: var(--font-mono);
+  color: #D1D5DB;
+  font-size: 12px;
+}
+.taskbar .tb-progress { display: flex; align-items: center; gap: 7px; }
+.taskbar .tb-progress .ring-track {
+  width: 24px; height: 24px; border-radius: 50%;
+  background: conic-gradient(#60A5FA calc(var(--p, 0) * 1%), rgba(255, 255, 255, 0.15) 0);
+  display: flex; align-items: center; justify-content: center;
+}
+.taskbar .tb-progress .ring-inner {
+  width: 18px; height: 18px; border-radius: 50%; background: #111827;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 8px; color: #F3F4F6; font-weight: 600;
+}
+.taskbar .tb-clock { text-align: right; line-height: 1.2; }
+.taskbar .tb-clock .time { color: #FFFFFF; font-size: 12px; font-weight: 500; }
+.taskbar .tb-clock .date { font-size: 10px; color: #9CA3AF; }
+
+/* ---------- Windows Start Menu Popover ---------- */
+.start-menu {
+  position: fixed;
+  left: 10px;
+  bottom: calc(var(--taskbar-h) + 8px);
+  width: 310px;
+  background: rgba(31, 35, 41, 0.94);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-l);
+  padding: 18px;
+  box-shadow: var(--shadow-pop);
+  z-index: 250;
+  display: none;
+  color: #F3F4F6;
+}
+.start-menu.open { display: block; }
+.start-menu .sm-label {
+  font-family: var(--font-mono); font-size: 10.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em;
+  color: #9CA3AF; margin-bottom: 12px;
+}
+.start-menu .sm-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 16px; }
+.start-menu .sm-item {
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  padding: 10px 4px;
+  border-radius: var(--radius-s);
+  text-decoration: none;
+  color: #F3F4F6;
+  font-size: 11px;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.04);
+  transition: background-color 0.15s ease;
+}
+.start-menu .sm-item:hover { background: rgba(255, 255, 255, 0.1); }
+.start-menu .sm-item .ic {
+  width: 32px; height: 32px; border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--cs, rgba(255, 255, 255, 0.08));
+  color: var(--c, #F3F4F6);
+}
+.start-menu .sm-item .ic svg { width: 16px; height: 16px; }
+.start-menu .sm-foot {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 12px;
+  font-size: 12px;
+  color: #D1D5DB;
+}
+.start-menu .sm-foot a { text-decoration: none; color: #60A5FA; font-weight: 600; }
+
+.tb-scrim { position: fixed; inset: 0; z-index: 240; display: none; }
+.tb-scrim.open { display: block; }
+
+/* ---------- Footer Note ---------- */
+.foot-note {
+  margin: 56px 0 20px;
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--ink-faint);
+}
+
+/* ============================================================
+   Unified Responsive Breakpoints
+   ============================================================ */
+
+@media (min-width: 640px) {
+  .taskbar .tb-btn .label { display: inline; }
+}
+
+@media (max-width: 768px) {
+  /* Hamburger Navigation Toggle */
+  .mobile-menu-toggle { display: flex; }
+
+  /* Mobile Ribbon Drawer */
+  .ribbon-nav {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    align-items: stretch;
+    background: var(--surface);
+    padding: 16px;
+    border-bottom: 1px solid var(--line-strong);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    z-index: 999;
+  }
+  .ribbon-nav.is-open { display: flex; }
+
+  /* Full-width Stacked Items */
+  .ribbon-dropdown { width: 100%; display: block; }
+  .ribbon-item { width: 100%; justify-content: space-between; padding: 12px 14px; font-size: 15px; }
+
+  /* Mobile Nested Accordion Menus */
+  .dropdown-menu {
+    position: static;
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    box-shadow: none;
+    border: none;
+    padding-left: 16px;
+    margin-top: 4px;
+    margin-bottom: 8px;
+    background: var(--bg-soft);
+    border-left: 2px solid var(--line-strong);
+    display: none;
+  }
+  .ribbon-dropdown.is-expanded .dropdown-menu { display: block; }
+
+  /* Search & Tile Breakpoints */
+  .tile-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 720px) {
+  .fix-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 480px) {
+  .tile-grid { grid-template-columns: 1fr; }
+}
