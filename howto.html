@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fix-It Database — Office Basics</title>
+  <style>
+    :root {
+      --ink: #1F2937;
+      --ink-soft: #4B5563;
+      --bg-soft: #EBF0F5;
+      --line: #E5E7EB;
+      --line-strong: #D1D5DB;
+      --radius-m: 10px;
+      --radius-l: 14px;
+      --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.1);
+      --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      --font-mono: SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
+      
+      /* App Specific Colors */
+      --word: #185ABD;
+      --word-soft: #E8F0FE;
+      --excel: #107C41;
+      --excel-soft: #E6F4EA;
+      --windows: #0078D4;
+      --windows-soft: #E5F2FF;
+      --powerpoint: #C43E1C;
+      --powerpoint-soft: #FCE8E6;
+      --howto: #D97706;
+      --howto-soft: #FEF3C7;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--font-body); color: var(--ink); background-color: #F9FAFB; line-height: 1.5; }
+
+    /* Shell Container */
+    .shell {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 28px;
+    }
+
+    /* Top Ribbon Navigation Header */
+    .top-ribbon {
+      background: #FFFFFF;
+      border-bottom: 1px solid var(--line-strong);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    .ribbon-container {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 56px;
+    }
+    .ribbon-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--ink);
+      font-weight: 700;
+      font-size: 15px;
+      letter-spacing: -0.01em;
+    }
+    .ribbon-nav {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .ribbon-dropdown {
+      position: relative;
+    }
+    .ribbon-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      border-radius: 6px;
+      font-size: 13.5px;
+      font-weight: 600;
+      text-decoration: none;
+      color: var(--ink-soft);
+      transition: all 0.15s ease;
+    }
+    .ribbon-item svg { width: 16px; height: 16px; flex-shrink: 0; }
+    .ribbon-item:hover, .ribbon-item.active { background: var(--bg-soft); color: var(--ink); }
+    .ribbon-item.win:hover { color: var(--windows); background: var(--windows-soft); }
+    .ribbon-item.word:hover { color: var(--word); background: var(--word-soft); }
+    .ribbon-item.excel:hover { color: var(--excel); background: var(--excel-soft); }
+    .ribbon-item.ppt:hover { color: var(--powerpoint); background: var(--powerpoint-soft); }
+    .ribbon-item.howto:hover, .ribbon-item.howto.active { color: var(--howto); background: var(--howto-soft); }
+
+    .dropdown-menu {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      background: #FFFFFF;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+      list-style: none;
+      min-width: 220px;
+      padding: 6px 0;
+      z-index: 100;
+    }
+    .ribbon-dropdown:hover .dropdown-menu { display: block; }
+    .dropdown-menu a {
+      display: block;
+      padding: 8px 16px;
+      font-size: 13px;
+      color: var(--ink-soft);
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .dropdown-menu a:hover {
+      background: var(--bg-soft);
+      color: var(--ink);
+    }
+
+    /* Mobile Toggle */
+    .mobile-menu-toggle {
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .mobile-menu-toggle .bar { width: 20px; height: 2px; background-color: var(--ink); }
+
+    /* Hero Section */
+    .course-hero {
+      background: #FFFFFF;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-l);
+      padding: 32px 36px;
+      margin: 28px 0 24px;
+      box-shadow: var(--shadow-card);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .course-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--howto);
+      background: var(--howto-soft);
+      padding: 4px 10px;
+      border-radius: 4px;
+      width: fit-content;
+    }
+    .course-hero h1 { font-size: 30px; font-weight: 800; letter-spacing: -0.02em; }
+    .lede { font-size: 15px; color: var(--ink-soft); line-height: 1.5; }
+
+    /* Search & Filter Controls */
+    .search-launcher {
+      position: relative;
+      margin-bottom: 18px;
+    }
+    .search-launcher svg {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 20px;
+      height: 20px;
+      color: var(--ink-soft);
+    }
+    .howto-search {
+      width: 100%;
+      padding: 14px 16px 14px 48px;
+      font-size: 15px;
+      border: 1px solid var(--line-strong);
+      border-radius: var(--radius-m);
+      background: #FFFFFF;
+      box-shadow: var(--shadow-card);
+      outline: none;
+      transition: border-color 0.15s ease;
+    }
+    .howto-search:focus {
+      border-color: var(--howto);
+      box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.15);
+    }
+
+    .filter-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 28px;
+    }
+    .filter-chip {
+      background: #FFFFFF;
+      border: 1px solid var(--line-strong);
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--ink-soft);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .filter-chip:hover { background: var(--bg-soft); color: var(--ink); }
+    .filter-chip.active {
+      background: var(--ink);
+      color: #FFFFFF;
+      border-color: var(--ink);
+    }
+    .filter-chip[data-filter="word"].active { background: var(--word); border-color: var(--word); }
+    .filter-chip[data-filter="excel"].active { background: var(--excel); border-color: var(--excel); }
+    .filter-chip[data-filter="windows"].active { background: var(--windows); border-color: var(--windows); }
+    .filter-chip[data-filter="powerpoint"].active { background: var(--powerpoint); border-color: var(--powerpoint); }
+    .filter-chip[data-filter="outlook"].active { background: #0072C6; border-color: #0072C6; }
+
+    /* Fix Grid Cards */
+    .fix-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 20px;
+      margin-bottom: 40px;
+    }
+    .fix-card {
+      background: #FFFFFF;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-m);
+      padding: 22px;
+      box-shadow: var(--shadow-card);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    .fix-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.06);
+    }
+    .fix-app {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 3px 8px;
+      border-radius: 4px;
+      width: fit-content;
+      color: var(--c, var(--ink));
+      background: var(--cs, var(--bg-soft));
+    }
+    .fix-card h3 { font-size: 16.5px; font-weight: 700; line-height: 1.35; color: var(--ink); }
+    .fix-card ol {
+      padding-left: 20px;
+      font-size: 13.5px;
+      color: var(--ink-soft);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .fix-card code {
+      font-family: var(--font-mono);
+      background: #F3F4F6;
+      padding: 2px 5px;
+      border-radius: 4px;
+      font-size: 12px;
+      border: 1px solid var(--line);
+    }
+    kbd {
+      padding: 2px 5px;
+      border-radius: 4px;
+      border: 1px solid var(--line-strong);
+      background: #F3F4F6;
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      box-shadow: 0 1px 0 rgba(0,0,0,0.1);
+    }
+
+    .no-results {
+      display: none;
+      text-align: center;
+      padding: 48px;
+      color: var(--ink-soft);
+      font-size: 15px;
+      background: #FFFFFF;
+      border: 1px dashed var(--line-strong);
+      border-radius: var(--radius-m);
+      margin-bottom: 40px;
+    }
+
+    /* Resources & Media Grid */
+    .section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .section-head h2 { font-size: 20px; font-weight: 700; }
+    .section-head .count { font-size: 11px; font-weight: 700; color: var(--ink-soft); letter-spacing: 0.05em; }
+
+    .resource-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+      margin-bottom: 40px;
+    }
+    .resource-card {
+      background: #FFFFFF;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-m);
+      padding: 18px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: var(--shadow-card);
+    }
+    .resource-info { display: flex; align-items: center; gap: 12px; }
+    .download-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      text-decoration: none;
+      color: var(--howto);
+    }
+
+    .video-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 20px;
+      margin-bottom: 48px;
+    }
+    .video-wrapper {
+      position: relative;
+      padding-bottom: 56.25%;
+      height: 0;
+      overflow: hidden;
+      border-radius: var(--radius-m);
+      border: 1px solid var(--line);
+      background: #000000;
+      box-shadow: var(--shadow-card);
+    }
+    .video-wrapper iframe {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      border: 0;
+    }
+
+    /* Enterprise Global Footer */
+    .site-footer {
+      background: #111827;
+      color: #9CA3AF;
+      border-top: 1px solid #1F2937;
+      padding: 48px 0 32px;
+      margin-top: 64px;
+    }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1.5fr;
+      gap: 36px;
+      margin-bottom: 40px;
+    }
+    .footer-col h4 {
+      color: #FFFFFF;
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      letter-spacing: 0.02em;
+    }
+    .footer-col p { font-size: 13px; line-height: 1.6; color: #9CA3AF; margin-bottom: 12px; }
+    .footer-links { list-style: none; padding: 0; margin: 0; }
+    .footer-links li { margin-bottom: 10px; }
+    .footer-links a { color: #9CA3AF; text-decoration: none; font-size: 13px; transition: color 0.15s ease; }
+    .footer-links a:hover { color: #FFFFFF; }
+
+    .social-buttons { display: flex; gap: 10px; margin-top: 12px; }
+    .social-btn {
+      width: 36px; height: 36px;
+      border-radius: 6px;
+      background: #1F2937;
+      color: #D1D5DB;
+      display: flex; align-items: center; justify-content: center;
+      text-decoration: none;
+      transition: all 0.15s ease;
+    }
+    .social-btn svg { width: 18px; height: 18px; fill: currentColor; }
+    .social-btn:hover { background: var(--howto); color: #FFFFFF; }
+
+    .footer-bottom {
+      border-top: 1px solid #1F2937;
+      padding-top: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+      font-size: 12px;
+      font-family: var(--font-mono);
+    }
+
+    @media (max-width: 840px) {
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 768px) {
+      .mobile-menu-toggle { display: flex; }
+      .ribbon-nav {
+        display: none;
+        position: absolute;
+        top: 56px;
+        left: 0; right: 0;
+        background: #FFFFFF;
+        flex-direction: column;
+        padding: 16px;
+        border-bottom: 1px solid var(--line-strong);
+      }
+      .ribbon-nav.is-open { display: flex; }
+      .dropdown-menu { position: static; box-shadow: none; border: none; padding-left: 16px; }
+    }
+    @media (max-width: 520px) {
+      .footer-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body data-page="howto">
+
+  <!-- TOP RIBBON NAVIGATION HEADER -->
+  <header class="top-ribbon">
+    <div class="ribbon-container">
+      <a href="index.html" class="ribbon-brand">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#D97706" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:22px;height:22px;">
+          <rect x="3" y="3" width="8" height="8" rx="1"/>
+          <rect x="13" y="3" width="8" height="8" rx="1"/>
+          <rect x="3" y="13" width="8" height="8" rx="1"/>
+          <rect x="13" y="13" width="8" height="8" rx="1"/>
+        </svg>
+        <span>Office Basics</span>
+      </a>
+
+      <button class="mobile-menu-toggle" aria-label="Toggle navigation menu" onclick="toggleMobileMenu()">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+      </button>
+
+      <nav class="ribbon-nav" id="ribbonNav">
+        <div class="ribbon-dropdown">
+          <a href="windows11.html" class="ribbon-item win">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M0 3.449L9.75 2.1v9.451H0m0 1.098h9.75V22.1L0 20.751M10.849 1.95L24 0v11.551H10.849m0 1.098H24V24l-13.151-1.95"/></svg>
+            Windows 11
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;margin-left:2px;"><path d="M6 9l6 6 6-6"/></svg>
+          </a>
+          <ul class="dropdown-menu">
+            <li><a href="windows11.html#lesson-1">Desktop & Snap Layouts</a></li>
+            <li><a href="windows11.html#lesson-2">Virtual Workspaces</a></li>
+            <li><a href="windows11.html#lesson-3">Clipboard History</a></li>
+            <li><a href="windows11.html#lesson-4">Power Shortcuts</a></li>
+          </ul>
+        </div>
+
+        <div class="ribbon-dropdown">
+          <a href="word.html" class="ribbon-item word">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6zM6 20V4h7v5h5v11H6zm10.5-7h-9v-1.5h9V13zm0 3h-9v-1.5h9V16zm-5 3h-4v-1.5h4V19z"/></svg>
+            Word
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;margin-left:2px;"><path d="M6 9l6 6 6-6"/></svg>
+          </a>
+          <ul class="dropdown-menu">
+            <li><a href="word.html#lesson-1">Setup & Page Layout</a></li>
+            <li><a href="word.html#lesson-2">Paragraph Typography</a></li>
+            <li><a href="word.html#lesson-3">Styles & Auto ToC</a></li>
+            <li><a href="word.html#lesson-4">Section Breaks & Numbers</a></li>
+            <li><a href="word.html#lesson-5">Track Changes & Review</a></li>
+          </ul>
+        </div>
+
+        <div class="ribbon-dropdown">
+          <a href="excel.html" class="ribbon-item excel">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zM7 10h2v2H7zm0 4h2v2H7zm4-4h6v2h-6zm0 4h6v2h-6z"/></svg>
+            Excel
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;margin-left:2px;"><path d="M6 9l6 6 6-6"/></svg>
+          </a>
+          <ul class="dropdown-menu">
+            <li><a href="excel.html#lesson-1">Grid Basics & Data Types</a></li>
+            <li><a href="excel.html#lesson-2">Core Formulas & References</a></li>
+            <li><a href="excel.html#lesson-3">Excel Tables & Sorting</a></li>
+            <li><a href="excel.html#lesson-4">XLOOKUP & VLOOKUP</a></li>
+            <li><a href="excel.html#lesson-5">Pivot Tables & Slicers</a></li>
+          </ul>
+        </div>
+
+        <div class="ribbon-dropdown">
+          <a href="powerpoint.html" class="ribbon-item ppt">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H9V8h8v5z"/></svg>
+            PowerPoint
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;margin-left:2px;"><path d="M6 9l6 6 6-6"/></svg>
+          </a>
+          <ul class="dropdown-menu">
+            <li><a href="powerpoint.html#lesson-1">Master Slides & Themes</a></li>
+            <li><a href="powerpoint.html#lesson-2">Alignment & Masks</a></li>
+            <li><a href="powerpoint.html#lesson-3">Charts & Callouts</a></li>
+            <li><a href="powerpoint.html#lesson-4">Morph & Animation</a></li>
+          </ul>
+        </div>
+
+        <a href="howto.html" class="ribbon-item howto active">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>
+          Fix-It Database
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="shell">
+
+    <!-- HERO SECTION -->
+    <section class="course-hero">
+      <span class="course-tag">Quick Reference Hub</span>
+      <h1>Fix-It Database</h1>
+      <p class="lede">26 real-world recurring workplace issues solved step-by-step. Filter by application or use instant search to find immediate troubleshooting steps.</p>
+    </section>
+
+    <!-- SEARCH & FILTERS -->
+    <div class="search-launcher">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3" stroke-linecap="round"/></svg>
+      <input type="text" id="searchInput" class="howto-search" placeholder="Search fixes — e.g. “blank page”, “print spooler”, “#N/A error”, “pst file”" autocomplete="off" oninput="filterFixes()">
+    </div>
+
+    <div class="filter-row" id="filterRow">
+      <button class="filter-chip active" data-filter="all" onclick="setFilter('all', this)">All Fixes (26)</button>
+      <button class="filter-chip" data-filter="word" onclick="setFilter('word', this)">Word</button>
+      <button class="filter-chip" data-filter="excel" onclick="setFilter('excel', this)">Excel</button>
+      <button class="filter-chip" data-filter="windows" onclick="setFilter('windows', this)">Windows</button>
+      <button class="filter-chip" data-filter="powerpoint" onclick="setFilter('powerpoint', this)">PowerPoint</button>
+      <button class="filter-chip" data-filter="outlook" onclick="setFilter('outlook', this)">Outlook / Sync</button>
+    </div>
+
+    <!-- FIX CARDS GRID -->
+    <div class="fix-grid" id="fixGrid">
+
+      <!-- REAL-WORLD ADDITIONS: OUTLOOK & SYNC -->
+      <div class="fix-card" data-cat="outlook">
+        <div class="fix-app" style="--c:#0072C6; --cs:#E5F1FB;">Outlook fix</div>
+        <h3>Repairing corrupted Outlook data files (.PST / .OST)</h3>
+        <ol>
+          <li>Close Outlook completely. Press <kbd>Win</kbd> + <kbd>R</kbd> and run <code>C:\Program Files\Microsoft Office\root\Office16\SCANPST.EXE</code>.</li>
+          <li>Click <b>Browse</b> to select your default `.pst` file (located under Documents/Outlook Files).</li>
+          <li>Click <b>Start</b> to scan for internal cross-link errors, then click <b>Repair</b> once processing finishes.</li>
+        </ol>
+      </div>
+
+      <div class="fix-card" data-cat="outlook">
+        <div class="fix-app" style="--c:#0072C6; --cs:#E5F1FB;">OneDrive fix</div>
+        <h3>Resolving OneDrive file sync lock conflicts</h3>
+        <ol>
+          <li>Look for the red "X" or blue padlocks on files in File Explorer.</li>
+          <li>Right-click the OneDrive cloud icon in your taskbar tray → <b>Pause syncing → 2 hours</b>.</li>
+          <li>Open Task Manager (<kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>Esc</kbd>), end <code>Microsoft OneDrive</code>, and restart it from the Start Menu.</li>
+        </ol>
+      </div>
+
+      <!-- WORD FIXES -->
+      <div class="fix-card" data-cat="word">
+        <div class="fix-app" style="--c:var(--word); --cs:var(--word-soft)">Word fix</div>
+        <h3>Deleting a stubborn blank page</h3>
+        <ol>
+          <li>Turn on Show/Hide ¶ (<kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>8</kbd>) to see hidden page elements.</li>
+          <li>If trailing paragraph marks exist, click before the last one and press <kbd>Backspace</kbd>.</li>
+          <li>If caused by an ending table, change that trailing paragraph mark's font size to <b>1pt</b>.</li>
+        </ol>
+      </div>
+
+      <div class="fix-card" data-cat="word">
+        <div class="fix-app" style="--c:var(--word); --cs:var(--word-soft)">Word fix</div>
+        <h3>Unlinking headers/footers between sections</h3>
+        <ol>
+          <li>Double-click the header or footer on the page where changes must start.</li>
+          <li>In the top ribbon, click <b>Link to Previous</b> to turn off synchronization with prior pages.</li>
+          <li>Modify or remove header content without affecting preceding document sections.</li>
+        </ol>
+      </div>
+
+      <div class="fix-card" data-cat="word">
+        <div class="fix-app" style="--c:var(--word); --cs:var(--word-soft)">Word fix</div>
+        <h3>Starting page numbers on page 3</h3>
+        <ol>
+          <li>Click at the top of page 3: go to <b>Layout → Breaks → Next Page</b>.</li>
+          <li>Double-click footer on page 3 and disable <b>Link to Previous</b>.</li>
+          <li>Go to <b>Insert → Page Number → Format Page Numbers → Start at: 1</b>.</li>
+        </ol>
+      </div>
+
+      <div class="fix-card" data-cat="word">
+        <div class="fix-app" style="--c:var(--word); --cs:var(--word-soft)">Word fix</div>
+        <h3>One landscape page in a portrait document</h3>
+        <ol>
+          <li>Place your cursor at the start of the page to rotate.</li>
+          <li>Insert a section break before and after it (<b>Layout → Breaks → Next Page</b>).</li>
+          <li>Click inside that isolated section and select <b>Layout → Orientation → Landscape</b>.</li>
+        </ol>
+      </div>
+
+      <div class="fix-card" data-cat="word">
+        <div class="fix-app" style="--c:var(--word); --cs:var(--word-soft)">Word fix</div>
+        <h3>Stopping typing over existing text (Overtype mode)</h3>
+        <ol>
+          <li>If new letters delete existing ones, press the <kbd>Insert</kbd> key on your keyboard once.</li>
+          <li>To permanently disable it: <b>File → Options → Advanced</b>.</li>
+          <li>Uncheck "Use the Insert key to control overtype mode".</li>
+        </ol>
+      </div>
+
+      <div class="fix-card" data-cat="word">
+        <div class="fix-app" style="--c:var(--word); --cs:var(--word-soft)">Word fix</div>
+        <h3>Fixing a table row that splits across pages</h3>
+        <ol>
+          <li>Click inside the table row, then <b>Table Layout → Properties → Row</b>.</li>
+          <li>Uncheck "Allow row to break across pages".</li>
+          <li>To apply to the full table, select all rows prior to opening properties.</li>
+        </ol>
+      </div>
+
+      <!-- EXCEL FIXES -->
+      <div class="fix-card" data-cat="excel">
+        <div class="fix-app" style="--c:var(--excel); --cs:var(--excel-soft)">Excel fix</div>
+        <h3>Hiding #N/A and #VALUE! lookup errors</h3>
+        <ol>
+          <li>Wrap your formula inside an <code>IFERROR</code> or <code>IFNA</code> wrapper function.</li>
+          <li>Type: <code>=IFERROR(XLOOKUP(A2, D:D, E:E), "Not Found")</code> or <code>""</code> for blank.</li>
+          <li>Copy down the grid — calculated cells will show clean text or blanks instead of error codes.</li>
+        </ol>
+      </div>
+
+      <div class="fix-card" data-cat="excel">
+        <div class="fix-app" style="--c:var(--excel); --cs:var(--excel-soft)">Excel fix</div>
+        <h3>Converting numbers stored as text to actual numbers</h3>
+        <ol>
+          <li>Select the column exhibiting green triangles in cell corners.</li>
+          <li>Click the yellow error indicator icon that appears beside the selection.</li>
+          <li>Select <b>Convert to Number</b> from the drop-down menu.</li>
+        </ol>
+      </div>
+
+      <div class="fix-card" data-cat="excel">
+        <div class="fix-app" style="--c:var(--excel); --cs:var(--excel-soft)">Excel fix</div>
+        <h3>Combining columns without retyping</h3>
+        <ol>
+          <li>In a new column, enter <code>=A2&amp;" "&amp;B2</code> to join text string values.</li>
+          <li>Copy the formula down the column grid.</li>
+          <li>Copy the result column → <b>Paste Special → Values</b> to lock plain text.</li>
+        </ol>
+      </div>
+
+      <div class="fix-card" data-cat="excel">
+        <div class="fix-app" style="--c:var(--excel); --cs:var(--excel-soft)">Excel fix</div>
+        <h3>Keeping leading zeroes (01234)</h3>
+        <ol>
+          <li>Select cells before entering data, right-click → <b>Format Cells → Text</b>.</li>
+          <li>For existing numbers: <b>Format Cells → Custom →</b> enter <code>00000</code>.</li>
+          <li>Custom formats preserve numerical value for calculations while keeping leading zeros.</li>
+        </ol>
+      </div>
+
+      <div class="fix-card" data-cat="excel">
+        <div class="fix-app" style="--c:var(--excel); --cs:var(--excel-soft)">Excel fix</div>
+        <h3>Freezing header rows</h3>
+        <ol>
+          <li>Click the cell directly underneath the header row you need to lock.</li>
+          <li>Go to <b>View → Freeze Panes → Freeze Panes</b>.</li>
+          <li>The header row stays fixed on screen during vertical scrolling.</li>
+        </ol>
+      </div>
+
+      <div class="fix-card" data-cat="excel">
+        <div class="fix-app" style="--c:var(--excel); --cs:var(--excel-soft)">Excel fix</div>
+        <h3>Removing duplicate rows</h3>
+        <ol>
+          <li>Select data range, then go to <b>Data → Remove Duplicates</b>.</li>
+          <li>Specify which columns require exact matches to qualify as duplicates.</li>
+          <li>Excel retains the initial instance and deletes subsequent duplicate rows.</li>
+        </ol>
+      </div>
+
+      <!-- WINDOWS FIXES -->
+      <div class="fix-card" data-cat="windows">
+        <div class="fix-app" style="--c:var(--windows); --cs:var(--windows-soft)">Windows fix</div>
+        <h3>Clearing stuck print queue jobs (Print Spooler)</h3>
+        <ol>
+          <li>Press <kbd>Win</kbd> + <kbd>R</kbd>, type <code>services.msc</code>, locate <b>Print Spooler</b> and click <b>Stop</b>.</li>
+          <li>Open File Explorer and navigate to <code>C:\Windows\System32\spool\PRINTERS</code>.</li>
+          <li>Delete all files inside the folder, then return to Services and click <b>Start</b> on Print Spooler.</li>
+        </ol>
+      </div>
+
+      <div class="fix-card" data-cat="windows">
+        <div class="fix-app" style="--c:var(--windows); --cs:var(--windows-soft)">Windows fix</div>
+        <h3>Fixing dual monitor resolution or display scaling</h3>
+        <ol>
+          <li>Right-click empty desktop area → <b>Display Settings</b>.</li>
+          <li>Select the misaligned monitor thumbnail at the top.</li>
+          <li>Set <b>Scale</b> to 100% or 125% and <b>Display Resolution</b> to Recommended.</li>
+        </ol>
+      </div>
+
+      <div class="fix-card" data-cat="windows">
+        <div class="fix-app" style="--c:var(--windows); --cs:var(--windows-soft)">Windows hack</div>
+        <h3>Multi-copying with Clipboard History</h3>
+        <ol>
+          <li>Copy multiple items sequentially (<kbd>Ctrl</kbd> + <kbd>C</kbd>).</li>
+          <li>Press <kbd>Win</kbd> + <kbd>V</kbd> where you want to paste.</li>
+          <li>Select any previous item from the pop-up history buffer.</li>
+        </ol>
+      </div>
+
+      <div class="fix-card" data-cat="windows">
+        <div class="fix-app" style="--c:var(--windows); --cs:var(--windows-soft)">Windows hack</div>
+        <h3>Screenshotting a specific area</h3>
+        <ol>
+          <li>Press <kbd>Win</kbd> + <kbd>Shift</kbd> + <kbd>S</kbd> to dim the screen.</li>
+          <li>Drag a rectangular crop box over the targeted screen region.</li>
+          <li>The snip copies automatically to clipboard for instant pasting (<kbd>Ctrl</kbd> + <kbd>V</kbd>).</li>
+        </ol>
+      </div>
+
+      <div class="fix-card" data-cat="windows">
+        <div class="fix-app" style="--c:var(--windows); --cs:var(--windows-soft)">Windows hack</div>
+        <h3>Locking two windows into split screen</h3>
+        <ol>
+          <li>Press <kbd>Win</kbd> + <kbd>←</kbd> on an active window.</li>
+          <li>Select a second application thumbnail from the remaining half.</li>
+          <li>Drag the center dividing line to resize both viewports simultaneously.</li>
+        </ol>
+      </div>
+
+      <div class="fix-card" data-cat="windows">
+        <div class="fix-app" style="--c:var(--windows); --cs:var(--windows-soft)">Windows hack</div>
+        <h3>Batch renaming multiple files</h3>
+        <ol>
+          <li>Select target files using drag-selection or <kbd>Ctrl</kbd> + click.</li>
+          <li>Press <kbd>F2</kbd>, type base file title, and hit <kbd>Enter</kbd>.</li>
+          <li>Windows automatically indexes items as <i>Title (1), Title (2)...</i></li>
+        </ol>
+      </div>
+
+      <!-- POWERPOINT FIXES -->
+      <div class="fix-card" data-cat="powerpoint">
+        <div class="fix-app" style="--c:var(--powerpoint); --cs:var(--powerpoint-soft)">PowerPoint fix</div>
+        <h3>Embedding custom fonts so text doesn't shift on other PCs</h3>
+        <ol>
+          <li>Open deck, click <b>File → Options → Save</b>.</li>
+          <li>Scroll to bottom and check <b>Embed fonts in the file</b>.</li>
+          <li>Select "Embed all characters" to ensure full editing support elsewhere.</li>
+        </ol>
+      </div>
+
+      <div class="fix-card" data-cat="powerpoint">
+        <div class="fix-app" style="--c:var(--powerpoint); --cs:var(--powerpoint-soft)">PowerPoint fix</div>
+        <h3>Fixing broken audio or video embeds</h3>
+        <ol>
+          <li>Delete broken media frames resulting from unlinked source files.</li>
+          <li>Re-insert via <b>Insert → Video/Audio → This Device</b>.</li>
+          <li>Go to <b>File → Info → Compress Media</b> to embed media internally within `.pptx`.</li>
+        </ol>
+      </div>
+
+      <div class="fix-card" data-cat="powerpoint">
+        <div class="fix-app" style="--c:var(--powerpoint); --cs:var(--powerpoint-soft)">PowerPoint fix</div>
+        <h3>Aligning objects across multiple slides</h3>
+        <ol>
+          <li>Place static elements in <b>View → Slide Master</b> layout templates.</li>
+          <li>For individual elements, check X/Y coordinates in <b>Format Shape → Position</b>.</li>
+          <li>Turn on <b>View → Guides</b> to establish alignment baselines across slides.</li>
+        </ol>
+      </div>
+
+      <div class="fix-card" data-cat="powerpoint">
+        <div class="fix-app" style="--c:var(--powerpoint); --cs:var(--powerpoint-soft)">PowerPoint fix</div>
+        <h3>Reducing large presentation file sizes</h3>
+        <ol>
+          <li>Go to <b>File → Compress Pictures</b>, choose target resolution (150 ppi).</li>
+          <li>Delete unused slide layouts and off-canvas hidden assets.</li>
+          <li>Re-link or stream external high-definition video assets.</li>
+        </ol>
+      </div>
+
+      <div class="fix-card" data-cat="powerpoint">
+        <div class="fix-app" style="--c:var(--powerpoint); --cs:var(--powerpoint-soft)">PowerPoint fix</div>
+        <h3>Recovering unsaved work after crash</h3>
+        <ol>
+          <li>Relaunch PowerPoint to inspect auto-triggered Document Recovery panes.</li>
+          <li>Alternatively go to <b>File → Info → Manage Presentation</b>.</li>
+          <li>Click <b>Recover Unsaved Presentations</b> to open local cache temp files.</li>
+        </ol>
+      </div>
+
+    </div>
+
+    <div class="no-results" id="noResults">No fixes match that search parameter — try searching for "print", "formula", "page", or "font".</div>
+
+    <!-- DOWNLOADABLE UTILITIES -->
+    <section class="section-head">
+      <h2>Troubleshooting Tools &amp; Scripts</h2>
+      <span class="count">SYSTEM UTILITIES</span>
+    </section>
+
+    <div class="resource-grid">
+      <div class="resource-card">
+        <div class="resource-info">
+          <svg viewBox="0 0 24 24" fill="#D97706" style="width:24px;height:24px;"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H9V8h8v5z"/></svg>
+          <div>
+            <strong style="font-size: 14px; color: var(--ink);">Print Spooler Reset Script</strong>
+            <p style="font-size: 12px; margin: 0; color: var(--ink-soft);">Automated Queue Cleaner (.BAT)</p>
+          </div>
+        </div>
+        <a href="#" class="download-link">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+          .BAT
+        </a>
+      </div>
+
+      <div class="resource-card">
+        <div class="resource-info">
+          <svg viewBox="0 0 24 24" fill="#D97706" style="width:24px;height:24px;"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H9V8h8v5z"/></svg>
+          <div>
+            <strong style="font-size: 14px; color: var(--ink);">Office Shortcut Master Matrix</strong>
+            <p style="font-size: 12px; margin: 0; color: var(--ink-soft);">Universal Hotkey Reference (.PDF)</p>
+          </div>
+        </div>
+        <a href="#" class="download-link">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+          .PDF
+        </a>
+      </div>
+    </div>
+
+    <!-- VIDEO TROUBLESHOOTING DEMOS -->
+    <section class="section-head">
+      <h2>Visual Troubleshooting Guides</h2>
+      <span class="count">STEP-BY-STEP MEDIA</span>
+    </section>
+
+    <div class="video-grid">
+      <div class="video-wrapper">
+        <iframe width="560" height="315" src="https://www.youtube.com/embed/Fvrtt0h84Mg?si=w6_ZoAoaaZFQPvtz&amp;start=16" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+      </div>
+      <div class="video-wrapper">
+        <iframe width="560" height="315" src="https://www.youtube.com/embed/Jl0Qk63z2ZY?si=r_Br7QEubGOoEt8f&amp;start=16" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ENTERPRISE FOOTER -->
+  <footer class="site-footer">
+    <div class="shell">
+      <div class="footer-grid">
+        
+        <!-- Column 1: Brand & Purpose -->
+        <div class="footer-col">
+          <div style="display: flex; align-items: center; gap: 8px; color: #FFFFFF; font-weight: 700; margin-bottom: 12px;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#0078D4" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px;">
+              <rect x="3" y="3" width="8" height="8" rx="1"/>
+              <rect x="13" y="3" width="8" height="8" rx="1"/>
+              <rect x="3" y="13" width="8" height="8" rx="1"/>
+              <rect x="13" y="13" width="8" height="8" rx="1"/>
+            </svg>
+            <span style="font-size: 16px;">Office Basics</span>
+          </div>
+          <p>An open educational resource engineered to eliminate workplace friction through structured training in Microsoft Office and Windows operating systems.</p>
+          <p style="font-size: 12px; color: #6B7280;">© 2026 Office Basics Learning Hub. Independent educational material.</p>
+        </div>
+
+        <!-- Column 2: Curriculum Links -->
+        <div class="footer-col">
+          <h4>Curriculum</h4>
+          <ul class="footer-links">
+            <li><a href="windows11.html">Windows 11 Masterclass</a></li>
+            <li><a href="word.html">Microsoft Word Specialist</a></li>
+            <li><a href="excel.html">Microsoft Excel Analytics</a></li>
+            <li><a href="powerpoint.html">PowerPoint Presentation</a></li>
+            <li><a href="howto.html">Fast Fix-It Database</a></li>
+          </ul>
+        </div>
+
+        <!-- Column 3: Platform & Privacy -->
+        <div class="footer-col">
+          <h4>Privacy & Security</h4>
+          <ul class="footer-links">
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Local Storage Standard</a></li>
+            <li><a href="#">Zero Cookie Tracking</a></li>
+            <li><a href="#">Open Template License</a></li>
+          </ul>
+        </div>
+
+        <!-- Column 4: Team & Socials -->
+        <div class="footer-col">
+          <h4>Connect with Our Team</h4>
+          <p>Follow our channels for weekly workflow updates and printable cheat sheets.</p>
+          <div class="social-buttons">
+            <a href="https://www.instagram.com/james.daudi.9231?igsh=MXFvMWF1cTZtOGh0cA==" target="_blank" class="social-btn" title="Instagram">
+              <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+            </a>
+            <a href="https://www.facebook.com/share/1EiwYu3VBD/" target="_blank" class="social-btn" title="Facebook">
+              <svg viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+            </a>
+            <a href="mailto:jamesdaudi2004@gmail.com" class="social-btn" title="Direct Email">
+              <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+            </a>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- FOOTER BOTTOM ROW -->
+      <div class="footer-bottom">
+        <div>
+          <span>Keyboard Shortcut Quick-Ref: </span>
+          <kbd>Ctrl</kbd> + <kbd>Z</kbd> Undo
+          <span style="margin: 0 8px;">•</span>
+          <kbd>Win</kbd> + <kbd>V</kbd> Clipboard History
+        </div>
+
+        <div class="status-badge">
+          <div class="status-dot"></div>
+          <span>Client-Side Local Network Active</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- DYNAMIC INTERACTIVE FILTER ENGINE SCRIPT -->
+  <script>
+    let activeCategory = 'all';
+
+    function setFilter(cat, btn) {
+      activeCategory = cat;
+      document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+      btn.classList.add('active');
+      filterFixes();
+    }
+
+    function filterFixes() {
+      const query = document.getElementById('searchInput').value.toLowerCase().trim();
+      const cards = document.querySelectorAll('.fix-card');
+      let visibleCount = 0;
+
+      cards.forEach(card => {
+        const catMatch = activeCategory === 'all' || card.getAttribute('data-cat') === activeCategory;
+        const textMatch = query === '' || card.innerText.toLowerCase().includes(query);
+
+        if (catMatch && textMatch) {
+          card.style.display = 'flex';
+          visibleCount++;
+        } else {
+          card.style.display = 'none';
+        }
+      });
+
+      const noResults = document.getElementById('noResults');
+      if (visibleCount === 0) {
+        noResults.style.display = 'block';
+      } else {
+        noResults.style.display = 'none';
+      }
+    }
+
+    function toggleMobileMenu() {
+      const nav = document.getElementById('ribbonNav');
+      nav.classList.toggle('is-open');
+    }
+  </script>
+</body>
+</html>

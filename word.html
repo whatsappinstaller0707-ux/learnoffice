@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Microsoft Word Specialist — Office Basics</title>
+  <style>
+    :root {
+      --ink: #1F2937;
+      --ink-soft: #4B5563;
+      --bg-soft: #EBF0F5;
+      --line: #E5E7EB;
+      --line-strong: #D1D5DB;
+      --radius-m: 10px;
+      --radius-l: 14px;
+      --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.1);
+      --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      --font-mono: SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
+      
+      /* Course Color Accent (Word Blue) */
+      --c: #185ABD;
+      --cs: #E8F0FE;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--font-body); color: var(--ink); background-color: #F9FAFB; line-height: 1.5; }
+
+    /* Container Shell */
+    .shell {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 0 28px;
+    }
+
+    /* Top Ribbon Navigation */
+    .top-ribbon {
+      background: #FFFFFF;
+      border-bottom: 1px solid var(--line-strong);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    .ribbon-container {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 0 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 56px;
+    }
+    .ribbon-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--ink);
+      font-weight: 700;
+      font-size: 15px;
+      letter-spacing: -0.01em;
+    }
+    .ribbon-nav {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .ribbon-dropdown {
+      position: relative;
+    }
+    .ribbon-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      border-radius: 6px;
+      font-size: 13.5px;
+      font-weight: 600;
+      text-decoration: none;
+      color: var(--ink-soft);
+      transition: all 0.15s ease;
+    }
+    .ribbon-item svg { width: 16px; height: 16px; flex-shrink: 0; }
+    .ribbon-item:hover, .ribbon-item.active { background: var(--bg-soft); color: var(--ink); }
+    .ribbon-item.win:hover { color: #0078D4; background: #E5F2FF; }
+    .ribbon-item.word:hover, .ribbon-item.word.active { color: #185ABD; background: #E8F0FE; }
+    .ribbon-item.excel:hover { color: #107C41; background: #E6F4EA; }
+    .ribbon-item.ppt:hover { color: #C43E1C; background: #FCE8E6; }
+
+    /* Dropdown Menus */
+    .dropdown-menu {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      background: #FFFFFF;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+      list-style: none;
+      min-width: 200px;
+      padding: 6px 0;
+      z-index: 100;
+    }
+    .ribbon-dropdown:hover .dropdown-menu { display: block; }
+    .dropdown-menu a {
+      display: block;
+      padding: 8px 16px;
+      font-size: 13px;
+      color: var(--ink-soft);
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .dropdown-menu a:hover {
+      background: var(--bg-soft);
+      color: var(--ink);
+    }
+
+    /* Mobile Hamburger Button */
+    .mobile-menu-toggle {
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .mobile-menu-toggle .bar {
+      width: 20px;
+      height: 2px;
+      background-color: var(--ink);
+    }
+
+    /* Dedicated Hero Section */
+    .course-hero {
+      background: #FFFFFF;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-l);
+      padding: 36px;
+      margin: 28px 0 32px;
+      box-shadow: var(--shadow-card);
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 32px;
+      align-items: center;
+    }
+    .hero-content { display: flex; flex-direction: column; gap: 12px; }
+    .course-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--c);
+      background: var(--cs);
+      padding: 4px 10px;
+      border-radius: 4px;
+      width: fit-content;
+    }
+    .course-hero h1 { font-size: 32px; font-weight: 800; letter-spacing: -0.02em; }
+    .lede { font-size: 16px; color: var(--ink-soft); line-height: 1.5; }
+    .hero-media { width: 100%; }
+    .hero-media img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      border-radius: var(--radius-m);
+      border: 1px solid var(--line);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+
+    /* Progress Tracker Bar */
+    .course-progress-card {
+      background: var(--cs);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-m);
+      padding: 16px 20px;
+      margin-top: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .bar-track {
+      height: 8px;
+      background: rgba(0, 0, 0, 0.08);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .bar-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--c);
+      transition: width 0.3s ease;
+    }
+    .course-progress-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--ink);
+    }
+
+    /* Accordion Interactive Lessons */
+    .lesson-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-bottom: 40px;
+    }
+    details.lesson {
+      background: #FFFFFF;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-m);
+      overflow: hidden;
+      box-shadow: var(--shadow-card);
+      transition: border-color 0.15s ease;
+    }
+    details.lesson[open] {
+      border-color: var(--c);
+    }
+    summary {
+      padding: 18px 24px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      list-style: none;
+      user-select: none;
+      font-weight: 600;
+    }
+    summary::-webkit-details-marker { display: none; }
+    summary .num {
+      font-family: var(--font-mono);
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--c);
+      background: var(--cs);
+      padding: 4px 8px;
+      border-radius: 4px;
+    }
+    summary h3 { font-size: 16px; flex-grow: 1; }
+    .mark-complete {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      color: var(--ink-soft);
+      cursor: pointer;
+    }
+    .chev { width: 18px; height: 18px; transition: transform 0.2s ease; }
+    details[open] .chev { transform: rotate(90deg); }
+
+    .lesson-body {
+      padding: 0 24px 24px;
+      border-top: 1px solid var(--line);
+      margin-top: 4px;
+      padding-top: 18px;
+    }
+    .lesson-body h4 { font-size: 14px; text-transform: uppercase; letter-spacing: 0.03em; margin: 16px 0 8px; color: var(--ink); }
+    .lesson-body ul, .lesson-body ol { padding-left: 20px; color: var(--ink-soft); font-size: 14px; margin-bottom: 12px; }
+    .lesson-body li { margin-bottom: 6px; }
+    .tip {
+      background: var(--cs);
+      border-left: 3px solid var(--c);
+      padding: 10px 14px;
+      border-radius: 0 6px 6px 0;
+      font-size: 13px;
+      margin: 16px 0;
+    }
+    kbd {
+      padding: 2px 6px;
+      border-radius: 4px;
+      border: 1px solid var(--line-strong);
+      background: #F3F4F6;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      box-shadow: 0 1px 0 rgba(0,0,0,0.1);
+    }
+
+    /* Content & Video Sections */
+    .section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .section-head h2 { font-size: 20px; font-weight: 700; }
+    .section-head .count {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--ink-soft);
+      letter-spacing: 0.05em;
+    }
+    .resource-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+      margin-bottom: 40px;
+    }
+    .resource-card {
+      background: #FFFFFF;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-m);
+      padding: 18px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: var(--shadow-card);
+    }
+    .resource-info { display: flex; align-items: center; gap: 12px; }
+    .resource-info svg { width: 24px; height: 24px; flex-shrink: 0; }
+    .download-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .video-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 20px;
+      margin-bottom: 48px;
+    }
+    .video-wrapper {
+      position: relative;
+      padding-bottom: 56.25%;
+      height: 0;
+      overflow: hidden;
+      border-radius: var(--radius-m);
+      border: 1px solid var(--line);
+      background: #000000;
+      box-shadow: var(--shadow-card);
+    }
+    .video-wrapper iframe {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      border: 0;
+    }
+
+    /* Footer Styles */
+    .site-footer {
+      background: #111827;
+      color: #9CA3AF;
+      border-top: 1px solid #1F2937;
+      padding: 48px 0 32px;
+      margin-top: 64px;
+    }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1.5fr;
+      gap: 36px;
+      margin-bottom: 40px;
+    }
+    .footer-col h4 {
+      color: #FFFFFF;
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      letter-spacing: 0.02em;
+    }
+    .footer-col p { font-size: 13px; line-height: 1.6; color: #9CA3AF; margin-bottom: 12px; }
+    .footer-links { list-style: none; padding: 0; margin: 0; }
+    .footer-links li { margin-bottom: 10px; }
+    .footer-links a { color: #9CA3AF; text-decoration: none; font-size: 13px; transition: color 0.15s ease; }
+    .footer-links a:hover { color: #FFFFFF; }
+
+    .social-buttons { display: flex; gap: 10px; margin-top: 12px; }
+    .social-btn {
+      width: 36px; height: 36px;
+      border-radius: 6px;
+      background: #1F2937;
+      color: #D1D5DB;
+      display: flex; align-items: center; justify-content: center;
+      text-decoration: none;
+      transition: all 0.15s ease;
+    }
+    .social-btn svg { width: 18px; height: 18px; fill: currentColor; }
+    .social-btn:hover { background: #185ABD; color: #FFFFFF; }
+
+    .footer-bottom {
+      border-top: 1px solid #1F2937;
+      padding-top: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+      font-size: 12px;
+      font-family: var(--font-mono);
+    }
+
+    @media (max-width: 840px) {
+      .course-hero { grid-template-columns: 1fr; }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 768px) {
+      .mobile-menu-toggle { display: flex; }
+      .ribbon-nav {
+        display: none;
+        position: absolute;
+        top: 56px;
+        left: 0;
+        right: 0;
+        background: #FFFFFF;
+        flex-direction: column;
+        padding: 16px;
+        border-bottom: 1px solid var(--line-strong);
+      }
+      .ribbon-nav.is-open { display: flex; }
+      .dropdown-menu { position: static; box-shadow: none; border: none; padding-left: 16px; }
+    }
+    @media (max-width: 520px) {
+      .footer-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body data-page="course" data-course="word">
+
+  <!-- TOP RIBBON BAR -->
+  <header class="top-ribbon">
+    <div class="ribbon-container">
+      <a href="index.html" class="ribbon-brand">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#185ABD" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:22px;height:22px;">
+          <rect x="3" y="3" width="8" height="8" rx="1"/>
+          <rect x="13" y="3" width="8" height="8" rx="1"/>
+          <rect x="3" y="13" width="8" height="8" rx="1"/>
+          <rect x="13" y="13" width="8" height="8" rx="1"/>
+        </svg>
+        <span>Office Basics</span>
+      </a>
+
+      <button class="mobile-menu-toggle" aria-label="Toggle navigation menu" onclick="toggleMobileMenu()">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+      </button>
+
+      <nav class="ribbon-nav" id="ribbonNav">
+        <div class="ribbon-dropdown win-group">
+          <a href="windows11.html" class="ribbon-item win">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M0 3.449L9.75 2.1v9.451H0m0 1.098h9.75V22.1L0 20.751M10.849 1.95L24 0v11.551H10.849m0 1.098H24V24l-13.151-1.95"/></svg>
+            Windows 11
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;margin-left:2px;"><path d="M6 9l6 6 6-6"/></svg>
+          </a>
+          <ul class="dropdown-menu">
+            <li><a href="windows11.html#lesson-1">Desktop & Snap Layouts</a></li>
+            <li><a href="windows11.html#lesson-2">Virtual Workspaces</a></li>
+            <li><a href="windows11.html#lesson-3">Clipboard History</a></li>
+            <li><a href="windows11.html#lesson-4">Power Shortcuts</a></li>
+          </ul>
+        </div>
+
+        <div class="ribbon-dropdown word-group">
+          <a href="word.html" class="ribbon-item word active">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6zM6 20V4h7v5h5v11H6zm10.5-7h-9v-1.5h9V13zm0 3h-9v-1.5h9V16zm-5 3h-4v-1.5h4V19z"/></svg>
+            Word
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;margin-left:2px;"><path d="M6 9l6 6 6-6"/></svg>
+          </a>
+          <ul class="dropdown-menu">
+            <li><a href="#lesson-1">Setup & Page Layout</a></li>
+            <li><a href="#lesson-2">Paragraph Typography</a></li>
+            <li><a href="#lesson-3">Styles & Auto ToC</a></li>
+            <li><a href="#lesson-4">Section Breaks & Numbers</a></li>
+            <li><a href="#lesson-5">Track Changes & Review</a></li>
+          </ul>
+        </div>
+
+        <div class="ribbon-dropdown excel-group">
+          <a href="excel.html" class="ribbon-item excel">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zM7 10h2v2H7zm0 4h2v2H7zm4-4h6v2h-6zm0 4h6v2h-6z"/></svg>
+            Excel
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;margin-left:2px;"><path d="M6 9l6 6 6-6"/></svg>
+          </a>
+          <ul class="dropdown-menu">
+            <li><a href="excel.html#lesson-1">Formulas & References</a></li>
+            <li><a href="excel.html#lesson-2">XLOOKUP Masterclass</a></li>
+            <li><a href="excel.html#lesson-3">Pivot Tables & Charts</a></li>
+            <li><a href="excel.html#lesson-4">Conditional Formatting</a></li>
+          </ul>
+        </div>
+
+        <div class="ribbon-dropdown ppt-group">
+          <a href="powerpoint.html" class="ribbon-item ppt">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H9V8h8v5z"/></svg>
+            PowerPoint
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;margin-left:2px;"><path d="M6 9l6 6 6-6"/></svg>
+          </a>
+          <ul class="dropdown-menu">
+            <li><a href="powerpoint.html#lesson-1">Slide Master Layouts</a></li>
+            <li><a href="powerpoint.html#lesson-2">Morph Transitions</a></li>
+            <li><a href="powerpoint.html#lesson-3">Object Alignment Tools</a></li>
+            <li><a href="powerpoint.html#lesson-4">Exporting Presentation Decks</a></li>
+          </ul>
+        </div>
+
+        <a href="howto.html" class="ribbon-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>
+          Fix-It Database
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="shell">
+
+    <!-- DEDICATED COURSE HERO SECTION -->
+    <section class="course-hero">
+      <div class="hero-content">
+        <span class="course-tag">Course 2 of 4</span>
+        <h1>Microsoft Word Specialist</h1>
+        <p class="lede">Five lessons that take you from a blank page to self-formatting documents: exact margins, reliable paragraph typography, automated Tables of Contents, and section-based page numbering.</p>
+        
+        <div class="course-progress-card">
+          <div class="course-progress-label" id="progressLabel">0 of 5 lessons complete · 0%</div>
+          <div class="bar-track">
+            <div class="bar-fill" id="progressFill"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-media">
+        <img src="https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=800&q=80" alt="Professional Document Editing Workspace">
+      </div>
+    </section>
+
+    <!-- LESSON ACCORDIONS -->
+    <section class="lesson-list">
+
+      <details class="lesson" id="lesson-1" data-lesson="setup-layout" open>
+        <summary>
+          <span class="num">01</span>
+          <h3>Setup, Margins &amp; Page Layout Control</h3>
+          <label class="mark-complete" onclick="event.stopPropagation()">
+            <input type="checkbox" class="complete-toggle" onchange="updateProgress()"> Done
+          </label>
+          <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg>
+        </summary>
+        <div class="lesson-body">
+          <p>Everything about page structural layout lives on the <b>Layout</b> tab. Establish these parameters prior to writing.</p>
+          <h4>Layout Configuration</h4>
+          <ul>
+            <li><b>Margins:</b> Access Layout → Margins for standard presets, or select <i>Custom Margins</i> (1 inch / 2.54cm is standard).</li>
+            <li><b>Orientation &amp; Paper Size:</b> Toggle Portrait or Landscape via Layout → Orientation; ensure size matches regional printing defaults (Letter vs A4).</li>
+            <li><b>Ruler Guide:</b> Enable View → Ruler to maintain visual feedback while setting tab stops and margin boundaries.</li>
+          </ul>
+          <div class="tip"><b>Tip:</b> Establish margins and paper size right when you open a new document. Modifying them later can shift image alignments and table borders.</div>
+        </div>
+      </details>
+
+      <details class="lesson" id="lesson-2" data-lesson="typography">
+        <summary>
+          <span class="num">02</span>
+          <h3>Paragraph Typography, Indents &amp; Spacing</h3>
+          <label class="mark-complete" onclick="event.stopPropagation()">
+            <input type="checkbox" class="complete-toggle" onchange="updateProgress()"> Done
+          </label>
+          <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg>
+        </summary>
+        <div class="lesson-body">
+          <p>Avoid using spacebars or extra Enter key presses to create vertical distance. Paragraph settings preserve structural consistency across updates.</p>
+          <h4>Paragraph Properties</h4>
+          <ul>
+            <li>Click the launcher arrow in the lower corner of the Paragraph panel on the Home tab to open detailed properties.</li>
+            <li><b>Line Spacing:</b> Adjust line height within paragraphs — values between 1.15 and 1.5 optimize on-screen reading.</li>
+            <li><b>Space Before/After:</b> Assign fixed pixel gaps between paragraphs to avoid manual double breaks.</li>
+            <li><b>Indentation:</b> Configure First Line Indent or Left/Right block indents independently.</li>
+          </ul>
+          <div class="tip"><b>Tip:</b> Enable non-printing characters using <b>Show/Hide ¶</b> (<kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>8</kbd>) to highlight structural spacing errors.</div>
+        </div>
+      </details>
+
+      <details class="lesson" id="lesson-3" data-lesson="styles-toc">
+        <summary>
+          <span class="num">03</span>
+          <h3>Styles, Heading Hierarchy &amp; Auto-Table of Contents</h3>
+          <label class="mark-complete" onclick="event.stopPropagation()">
+            <input type="checkbox" class="complete-toggle" onchange="updateProgress()"> Done
+          </label>
+          <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg>
+        </summary>
+        <div class="lesson-body">
+          <p>Using structural Heading styles enables automated outline building and table of contents generation.</p>
+          <h4>Applying Document Styles</h4>
+          <ul>
+            <li>Apply <i>Heading 1</i> from the Styles panel on the Home tab for main sections instead of applying bold formatting manually.</li>
+            <li>Use <i>Heading 2</i> for sub-topics and <i>Heading 3</i> for nested sub-points to form a document outline.</li>
+            <li>Enable the <b>Navigation Pane</b> (View → Navigation Pane) to view and rearrange document sections via drag-and-drop.</li>
+          </ul>
+          <h4>Generating an Automatic Table of Contents</h4>
+          <ol>
+            <li>Position your cursor at the insertion point (typically directly following a cover page).</li>
+            <li>Navigate to References → Table of Contents → select an Automatic Table design.</li>
+            <li>Right-click the generated table and choose <i>Update Field</i> to refresh titles and page numbers after editing.</li>
+          </ol>
+          <div class="tip"><b>Tip:</b> If an automated Table of Contents misses text or displays formatting errors, update the original heading style rather than editing the generated table directly.</div>
+        </div>
+      </details>
+
+      <details class="lesson" id="lesson-4" data-lesson="section-breaks">
+        <summary>
+          <span class="num">04</span>
+          <h3>Section Breaks &amp; Independent Page Numbering</h3>
+          <label class="mark-complete" onclick="event.stopPropagation()">
+            <input type="checkbox" class="complete-toggle" onchange="updateProgress()"> Done
+          </label>
+          <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg>
+        </summary>
+        <div class="lesson-body">
+          <p>Unlike standard page breaks, a <b>Section Break</b> lets you apply independent page margins, orientations, and header/footer configurations across different chapters.</p>
+          <h4>Section Break Configuration</h4>
+          <ul>
+            <li>Insert breaks via Layout → Breaks → Section Breaks → <i>Next Page</i>.</li>
+            <li>Open the new section header or footer and disable the <b>Link to Previous</b> setting before altering layout choices.</li>
+            <li>With unlinked footers, use Insert → Page Number → Format Page Numbers → <i>Start at</i> to restart numbering sequences at custom values.</li>
+          </ul>
+          <div class="tip"><b>Tip:</b> Section breaks are designated by a double-dotted line on screen when <b>Show/Hide ¶</b> is enabled.</div>
+        </div>
+      </details>
+
+      <details class="lesson" id="lesson-5" data-lesson="track-changes">
+        <summary>
+          <span class="num">05</span>
+          <h3>Track Changes, Comments &amp; Document Review</h3>
+          <label class="mark-complete" onclick="event.stopPropagation()">
+            <input type="checkbox" class="complete-toggle" onchange="updateProgress()"> Done
+          </label>
+          <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg>
+        </summary>
+        <div class="lesson-body">
+          <p>Collaborate across teams while tracking proposed edits, commentary, and markup inline.</p>
+          <h4>Reviewing Tools</h4>
+          <ul>
+            <li>Enable Review → Track Changes (<kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>E</kbd>) prior to modifying shared content.</li>
+            <li>Deletions show in strikethrough and insertions are underlined, with distinct colors assigned per collaborator.</li>
+            <li>Use <i>New Comment</i> to attach questions or discussion threads directly to selected text passages.</li>
+            <li>Process proposed edits via the <i>Accept</i> or <i>Reject</i> options in the Review toolbar.</li>
+          </ul>
+          <div class="tip"><b>Tip:</b> Run File → Info → Check for Issues → Inspect Document to clear hidden markup or personal comments before publishing final copies.</div>
+        </div>
+      </details>
+
+    </section>
+
+    <!-- DOWNLOADABLE RESOURCES -->
+    <section class="section-head">
+      <h2>Learning Resources & Templates</h2>
+      <span class="count">DOWNLOADABLE GUIDES</span>
+    </section>
+
+    <div class="resource-grid">
+      <div class="resource-card">
+        <div class="resource-info">
+          <svg viewBox="0 0 24 24" fill="#185ABD"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z"/></svg>
+          <div>
+            <strong style="font-size: 14px; color: var(--ink);">Word Formatting Cheat Sheet</strong>
+            <p style="font-size: 12px; margin: 0; color: var(--ink-soft);">Printable Reference Guide (.PDF)</p>
+          </div>
+        </div>
+        <a href="#" class="download-link" style="color: #185ABD;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+          .PDF
+        </a>
+      </div>
+
+      <div class="resource-card">
+        <div class="resource-info">
+          <svg viewBox="0 0 24 24" fill="#185ABD"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z"/></svg>
+          <div>
+            <strong style="font-size: 14px; color: var(--ink);">Structured Report Template</strong>
+            <p style="font-size: 12px; margin: 0; color: var(--ink-soft);">Pre-styled Document Frame (.DOTX)</p>
+          </div>
+        </div>
+        <a href="#" class="download-link" style="color: #185ABD;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+          .DOTX
+        </a>
+      </div>
+    </div>
+
+    <!-- VIDEO DEMONSTRATIONS -->
+    <section class="section-head">
+      <h2>Video Demonstrations</h2>
+      <span class="count">STEP-BY-STEP MEDIA</span>
+    </section>
+
+    <div class="video-grid">
+      <div class="video-wrapper">
+        <iframe width="560" height="315" src="https://www.youtube.com/embed/ZNQj2owRymo?si=JqCEuo239dI6tmgw" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+      </div>
+      <div class="video-wrapper">
+        <iframe width="560" height="315" src="https://www.youtube.com/embed/7hPcdNAS0v4?si=tJChKHacA3ESY2j_" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ENTERPRISE FOOTER -->
+  <footer class="site-footer">
+    <div class="shell">
+      <div class="footer-grid">
+        
+        <!-- Column 1: Brand & Purpose -->
+        <div class="footer-col">
+          <div style="display: flex; align-items: center; gap: 8px; color: #FFFFFF; font-weight: 700; margin-bottom: 12px;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#0078D4" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px;">
+              <rect x="3" y="3" width="8" height="8" rx="1"/>
+              <rect x="13" y="3" width="8" height="8" rx="1"/>
+              <rect x="3" y="13" width="8" height="8" rx="1"/>
+              <rect x="13" y="13" width="8" height="8" rx="1"/>
+            </svg>
+            <span style="font-size: 16px;">Office Basics</span>
+          </div>
+          <p>An open educational resource engineered to eliminate workplace friction through structured training in Microsoft Office and Windows operating systems.</p>
+          <p style="font-size: 12px; color: #6B7280;">© 2026 Office Basics Learning Hub. Independent educational material.</p>
+        </div>
+
+        <!-- Column 2: Curriculum Links -->
+        <div class="footer-col">
+          <h4>Curriculum</h4>
+          <ul class="footer-links">
+            <li><a href="windows11.html">Windows 11 Masterclass</a></li>
+            <li><a href="word.html">Microsoft Word Specialist</a></li>
+            <li><a href="excel.html">Microsoft Excel Analytics</a></li>
+            <li><a href="powerpoint.html">PowerPoint Presentation</a></li>
+            <li><a href="howto.html">Fast Fix-It Database</a></li>
+          </ul>
+        </div>
+
+        <!-- Column 3: Platform & Privacy -->
+        <div class="footer-col">
+          <h4>Privacy & Security</h4>
+          <ul class="footer-links">
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Local Storage Standard</a></li>
+            <li><a href="#">Zero Cookie Tracking</a></li>
+            <li><a href="#">Open Template License</a></li>
+          </ul>
+        </div>
+
+        <!-- Column 4: Team & Socials -->
+        <div class="footer-col">
+          <h4>Connect with Our Team</h4>
+          <p>Follow our channels for weekly workflow updates and printable cheat sheets.</p>
+          <div class="social-buttons">
+            <a href="https://www.instagram.com/james.daudi.9231?igsh=MXFvMWF1cTZtOGh0cA==" target="_blank" class="social-btn" title="Instagram">
+              <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+            </a>
+            <a href="https://www.facebook.com/share/1EiwYu3VBD/" target="_blank" class="social-btn" title="Facebook">
+              <svg viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+            </a>
+            <a href="jamesdaudi2004@gmail.com" class="social-btn" title="Direct Email">
+              <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+            </a>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- FOOTER BOTTOM ROW -->
+      <div class="footer-bottom">
+        <div>
+          <span>Keyboard Shortcut Quick-Ref: </span>
+          <kbd>Ctrl</kbd> + <kbd>Z</kbd> Undo
+          <span style="margin: 0 8px;">•</span>
+          <kbd>Win</kbd> + <kbd>V</kbd> Clipboard History
+        </div>
+
+        <div class="status-badge">
+          <div class="status-dot"></div>
+          <span>Client-Side Local Network Active</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- SCRIPT IMPLEMENTATION -->
+  <script>
+    // Dynamic Course Progress Tracker
+    function updateProgress() {
+      const checkboxes = document.querySelectorAll('.complete-toggle');
+      const total = checkboxes.length;
+      let completed = 0;
+
+      checkboxes.forEach(cb => {
+        if (cb.checked) completed++;
+      });
+
+      const percentage = Math.round((completed / total) * 100);
+      document.getElementById('progressLabel').innerText = `${completed} of ${total} lessons complete · ${percentage}%`;
+      document.getElementById('progressFill').style.width = `${percentage}%`;
+    }
+
+    // Mobile Navigation Toggle
+    function toggleMobileMenu() {
+      const nav = document.getElementById('ribbonNav');
+      nav.classList.toggle('is-open');
+    }
+  </script>
+</body>
+</html>

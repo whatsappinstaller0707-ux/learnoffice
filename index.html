@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Office Basics — Professional Masterclass in Windows, Word, Excel & PowerPoint</title>
+  <style>
+    :root {
+      --ink: #1F2937;
+      --ink-soft: #4B5563;
+      --bg-soft: #EBF0F5;
+      --line: #E5E7EB;
+      --line-strong: #D1D5DB;
+      --radius-m: 10px;
+      --radius-l: 14px;
+      --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.1);
+      --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      --font-display: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      --font-mono: SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--font-body); color: var(--ink); background-color: #F9FAFB; line-height: 1.5; }
+
+    /* Container Shell */
+    .shell {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 0 28px;
+    }
+
+    /* Top Ribbon Navigation */
+    .top-ribbon {
+      background: #FFFFFF;
+      border-bottom: 1px solid var(--line-strong);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    .ribbon-container {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 0 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 56px;
+    }
+    .ribbon-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--ink);
+      font-weight: 700;
+      font-size: 15px;
+      letter-spacing: -0.01em;
+    }
+    .ribbon-nav {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .ribbon-dropdown {
+      position: relative;
+    }
+    .ribbon-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      border-radius: 6px;
+      font-size: 13.5px;
+      font-weight: 600;
+      text-decoration: none;
+      color: var(--ink-soft);
+      transition: all 0.15s ease;
+    }
+    .ribbon-item svg { width: 16px; height: 16px; flex-shrink: 0; }
+    .ribbon-item:hover { background: var(--bg-soft); color: var(--ink); }
+    .ribbon-item.win:hover { color: #0078D4; background: #E5F2FF; }
+    .ribbon-item.word:hover { color: #185ABD; background: #E8F0FE; }
+    .ribbon-item.excel:hover { color: #107C41; background: #E6F4EA; }
+    .ribbon-item.ppt:hover { color: #C43E1C; background: #FCE8E6; }
+
+    /* Dropdown Menus */
+    .dropdown-menu {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      background: #FFFFFF;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+      list-style: none;
+      min-width: 200px;
+      padding: 6px 0;
+      z-index: 100;
+    }
+    .ribbon-dropdown:hover .dropdown-menu { display: block; }
+    .dropdown-menu a {
+      display: block;
+      padding: 8px 16px;
+      font-size: 13px;
+      color: var(--ink-soft);
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .dropdown-menu a:hover {
+      background: var(--bg-soft);
+      color: var(--ink);
+    }
+
+    /* Mobile Hamburger Button */
+    .mobile-menu-toggle {
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .mobile-menu-toggle .bar {
+      width: 20px;
+      height: 2px;
+      background-color: var(--ink);
+    }
+
+    /* Hero Auto-Switching Banner */
+    .hero-slider-container {
+      position: relative;
+      background: #FFFFFF;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-l);
+      padding: 40px;
+      margin: 28px 0 36px;
+      box-shadow: var(--shadow-card);
+      overflow: hidden;
+      min-height: 220px;
+    }
+    .hero-slide {
+      display: none;
+      animation: fadeIn 0.4s ease-in-out;
+    }
+    .hero-slide.active { display: block; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .lede {
+      font-size: 16px;
+      color: var(--ink-soft);
+      margin-top: 8px;
+    }
+    .btn-action {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      color: #FFFFFF;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 14px;
+      margin-top: 14px;
+      transition: opacity 0.15s ease;
+    }
+    .btn-action:hover { opacity: 0.9; }
+
+    /* Trust & Purpose Section */
+    .purpose-box {
+      background: #FFFFFF;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-m);
+      padding: 32px;
+      margin-bottom: 40px;
+      box-shadow: var(--shadow-card);
+    }
+    .purpose-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 24px;
+      margin-top: 24px;
+    }
+    .purpose-item {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .purpose-item .icon-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--ink);
+    }
+    .purpose-item svg { width: 20px; height: 20px; color: #0078D4; }
+
+    /* Main Course Tracks Section Headings & Tiles */
+    .section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .section-head h2 { font-size: 20px; font-weight: 700; }
+    .section-head .count {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--ink-soft);
+      letter-spacing: 0.05em;
+    }
+    .tile-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-bottom: 44px;
+    }
+    .tile {
+      background: #FFFFFF;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-m);
+      padding: 20px;
+      text-decoration: none;
+      color: var(--ink);
+      transition: all 0.2s ease;
+      box-shadow: var(--shadow-card);
+    }
+    .tile:hover {
+      border-color: var(--tile-color, #0078D4);
+      transform: translateY(-2px);
+    }
+    .tile-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      background: var(--tile-soft, #E5F2FF);
+      color: var(--tile-color, #0078D4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 12px;
+    }
+    .tile-icon svg { width: 20px; height: 20px; }
+    .tile h3 { font-size: 16px; margin-bottom: 6px; }
+    .tile-desc { font-size: 13px; color: var(--ink-soft); line-height: 1.4; }
+
+    /* Download Cards & Media Wrappers */
+    .resource-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+      margin-bottom: 44px;
+    }
+    .resource-card {
+      background: #FFFFFF;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-m);
+      padding: 18px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: var(--shadow-card);
+    }
+    .resource-info { display: flex; align-items: center; gap: 12px; }
+    .resource-info svg { width: 24px; height: 24px; flex-shrink: 0; }
+    .download-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .video-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 20px;
+      margin-bottom: 48px;
+    }
+    .video-wrapper {
+      position: relative;
+      padding-bottom: 56.25%;
+      height: 0;
+      overflow: hidden;
+      border-radius: var(--radius-m);
+      border: 1px solid var(--line);
+      background: #000000;
+      box-shadow: var(--shadow-card);
+    }
+    .video-wrapper iframe {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      border: 0;
+    }
+
+    /* Footer Styles */
+    .site-footer {
+      background: #111827;
+      color: #9CA3AF;
+      border-top: 1px solid #1F2937;
+      padding: 48px 0 32px;
+      margin-top: 64px;
+    }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1.5fr;
+      gap: 36px;
+      margin-bottom: 40px;
+    }
+    .footer-col h4 {
+      color: #FFFFFF;
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      letter-spacing: 0.02em;
+    }
+    .footer-col p { font-size: 13px; line-height: 1.6; color: #9CA3AF; margin-bottom: 12px; }
+    .footer-links { list-style: none; padding: 0; margin: 0; }
+    .footer-links li { margin-bottom: 10px; }
+    .footer-links a { color: #9CA3AF; text-decoration: none; font-size: 13px; transition: color 0.15s ease; }
+    .footer-links a:hover { color: #FFFFFF; }
+
+    .social-buttons { display: flex; gap: 10px; margin-top: 12px; }
+    .social-btn {
+      width: 36px; height: 36px;
+      border-radius: 6px;
+      background: #1F2937;
+      color: #D1D5DB;
+      display: flex; align-items: center; justify-content: center;
+      text-decoration: none;
+      transition: all 0.15s ease;
+    }
+    .social-btn svg { width: 18px; height: 18px; fill: currentColor; }
+    .social-btn:hover { background: #0078D4; color: #FFFFFF; }
+
+    .footer-bottom {
+      border-top: 1px solid #1F2937;
+      padding-top: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+      font-size: 12px;
+      font-family: var(--font-mono);
+    }
+    kbd {
+      padding: 2px 6px;
+      border-radius: 4px;
+      border: 1px solid #374151;
+      background: #1F2937;
+      color: #FFFFFF;
+    }
+    .status-badge { display: inline-flex; align-items: center; gap: 6px; color: #10B981; }
+    .status-dot { width: 8px; height: 8px; border-radius: 50%; background: #10B981; }
+
+    /* Media Queries */
+    @media (max-width: 840px) {
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 768px) {
+      .mobile-menu-toggle { display: flex; }
+      .ribbon-nav {
+        display: none;
+        position: absolute;
+        top: 56px;
+        left: 0;
+        right: 0;
+        background: #FFFFFF;
+        flex-direction: column;
+        padding: 16px;
+        border-bottom: 1px solid var(--line-strong);
+      }
+      .ribbon-nav.is-open { display: flex; }
+      .dropdown-menu { position: static; box-shadow: none; border: none; padding-left: 16px; }
+    }
+    @media (max-width: 520px) {
+      .footer-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TOP RIBBON BAR -->
+  <header class="top-ribbon">
+    <div class="ribbon-container">
+      <a href="index.html" class="ribbon-brand">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#0078D4" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:22px;height:22px;">
+          <rect x="3" y="3" width="8" height="8" rx="1"/>
+          <rect x="13" y="3" width="8" height="8" rx="1"/>
+          <rect x="3" y="13" width="8" height="8" rx="1"/>
+          <rect x="13" y="13" width="8" height="8" rx="1"/>
+        </svg>
+        <span>Office Basics</span>
+      </a>
+
+      <!-- Mobile Hamburger Button -->
+      <button class="mobile-menu-toggle" aria-label="Toggle navigation menu" onclick="toggleMobileMenu()">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+      </button>
+
+      <nav class="ribbon-nav" id="ribbonNav">
+        <!-- WINDOWS 11 DROPDOWN -->
+        <div class="ribbon-dropdown win-group">
+          <a href="windows11.html" class="ribbon-item win">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M0 3.449L9.75 2.1v9.451H0m0 1.098h9.75V22.1L0 20.751M10.849 1.95L24 0v11.551H10.849m0 1.098H24V24l-13.151-1.95"/></svg>
+            Windows 11
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;margin-left:2px;"><path d="M6 9l6 6 6-6"/></svg>
+          </a>
+          <ul class="dropdown-menu">
+            <li><a href="windows11.html#lesson-1">Desktop & Snap Layouts</a></li>
+            <li><a href="windows11.html#lesson-2">Virtual Workspaces</a></li>
+            <li><a href="windows11.html#lesson-3">Clipboard History</a></li>
+            <li><a href="windows11.html#lesson-4">Power Shortcuts</a></li>
+          </ul>
+        </div>
+
+        <!-- WORD DROPDOWN -->
+        <div class="ribbon-dropdown word-group">
+          <a href="word.html" class="ribbon-item word">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6zM6 20V4h7v5h5v11H6zm10.5-7h-9v-1.5h9V13zm0 3h-9v-1.5h9V16zm-5 3h-4v-1.5h4V19z"/></svg>
+            Word
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;margin-left:2px;"><path d="M6 9l6 6 6-6"/></svg>
+          </a>
+          <ul class="dropdown-menu">
+            <li><a href="word.html#lesson-1">Page Breaks & Sections</a></li>
+            <li><a href="word.html#lesson-2">Header & Footer Numbering</a></li>
+            <li><a href="word.html#lesson-3">Headings & Auto ToC</a></li>
+            <li><a href="word.html#lesson-4">Styles & Document Themes</a></li>
+          </ul>
+        </div>
+
+        <!-- EXCEL DROPDOWN -->
+        <div class="ribbon-dropdown excel-group">
+          <a href="excel.html" class="ribbon-item excel">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zM7 10h2v2H7zm0 4h2v2H7zm4-4h6v2h-6zm0 4h6v2h-6z"/></svg>
+            Excel
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;margin-left:2px;"><path d="M6 9l6 6 6-6"/></svg>
+          </a>
+          <ul class="dropdown-menu">
+            <li><a href="excel.html#lesson-1">Formulas & References</a></li>
+            <li><a href="excel.html#lesson-2">XLOOKUP Masterclass</a></li>
+            <li><a href="excel.html#lesson-3">Pivot Tables & Charts</a></li>
+            <li><a href="excel.html#lesson-4">Conditional Formatting</a></li>
+          </ul>
+        </div>
+
+        <!-- POWERPOINT DROPDOWN -->
+        <div class="ribbon-dropdown ppt-group">
+          <a href="powerpoint.html" class="ribbon-item ppt">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H9V8h8v5z"/></svg>
+            PowerPoint
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;margin-left:2px;"><path d="M6 9l6 6 6-6"/></svg>
+          </a>
+          <ul class="dropdown-menu">
+            <li><a href="powerpoint.html#lesson-1">Slide Master Layouts</a></li>
+            <li><a href="powerpoint.html#lesson-2">Morph Transitions</a></li>
+            <li><a href="powerpoint.html#lesson-3">Object Alignment Tools</a></li>
+            <li><a href="powerpoint.html#lesson-4">Exporting Presentation Decks</a></li>
+          </ul>
+        </div>
+
+        <!-- FIX-IT DATABASE -->
+        <a href="howto.html" class="ribbon-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>
+          Fix-It Database
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="shell">
+
+    <!-- HERO SECTION WITH DYNAMIC SLIDER -->
+    <section class="hero-slider-container">
+      <div class="hero-slide active" id="slide-1">
+        <span class="eyebrow" style="color: #0078D4;">
+          <svg viewBox="0 0 24 24" fill="currentColor" style="width:14px;height:14px;"><path d="M0 3.449L9.75 2.1v9.451H0m0 1.098h9.75V22.1L0 20.751M10.849 1.95L24 0v11.551H10.849m0 1.098H24V24l-13.151-1.95"/></svg>
+          Windows 11 Desktop Mastery
+        </span>
+        <h1 style="margin-top: 8px;">Master Multitasking & Power Workflows</h1>
+        <p class="lede">Learn Snap Layouts, Virtual Desktops, Clipboard History, and System Shortcuts in under 10 minutes.</p>
+        <a href="windows11.html" class="btn-action" style="background: #0078D4;">Start Windows Course →</a>
+      </div>
+
+      <div class="hero-slide" id="slide-2">
+        <span class="eyebrow" style="color: #185ABD;">
+          <svg viewBox="0 0 24 24" fill="currentColor" style="width:14px;height:14px;"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z"/></svg>
+          Microsoft Word Specialist
+        </span>
+        <h1 style="margin-top: 8px;">Create Executive Reports & Documents</h1>
+        <p class="lede">Take full control of section breaks, custom page numbering, header hierarchies, and dynamic Table of Contents.</p>
+        <a href="word.html" class="btn-action" style="background: #185ABD;">Start Word Course →</a>
+      </div>
+
+      <div class="hero-slide" id="slide-3">
+        <span class="eyebrow" style="color: #107C41;">
+          <svg viewBox="0 0 24 24" fill="currentColor" style="width:14px;height:14px;"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/></svg>
+          Microsoft Excel Analytics
+        </span>
+        <h1 style="margin-top: 8px;">Conquer Data, Formulas & Pivot Tables</h1>
+        <p class="lede">Master XLOOKUP, absolute cell references, conditional formatting, and executive dashboards with practical data.</p>
+        <a href="excel.html" class="btn-action" style="background: #107C41;">Start Excel Course →</a>
+      </div>
+
+      <div class="hero-slide" id="slide-4">
+        <span class="eyebrow" style="color: #C43E1C;">
+          <svg viewBox="0 0 24 24" fill="currentColor" style="width:14px;height:14px;"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/></svg>
+          Microsoft PowerPoint Design
+        </span>
+        <h1 style="margin-top: 8px;">Design High-Impact Visual Decks</h1>
+        <p class="lede">Build cinematic presentations using Morph transitions, alignment grids, visual masks, and custom Slide Masters.</p>
+        <a href="powerpoint.html" class="btn-action" style="background: #C43E1C;">Start PowerPoint Course →</a>
+      </div>
+    </section>
+
+    <!-- PURPOSE & PLATFORM GUARANTEE -->
+    <section class="purpose-box">
+      <h2>Built for Instant Practical Skill</h2>
+      <p>Office Basics is structured for immediate competence. No fluff, no mandatory user registration, and no paywalls—just direct, task-oriented guides engineered to get work done faster.</p>
+
+      <div class="purpose-grid">
+        <div class="purpose-item">
+          <div class="icon-header">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            100% Client-Side Privacy
+          </div>
+          <p>Your learning progress is stored locally inside your browser's encrypted storage. We collect zero personal data, tracking cookies, or contact details.</p>
+        </div>
+
+        <div class="purpose-item">
+          <div class="icon-header">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+            30-Second Fix Cards
+          </div>
+          <p>Stuck on broken page numbers or formula errors? Use our searchable diagnostic database for instant step-by-step visual solutions.</p>
+        </div>
+
+        <div class="purpose-item">
+          <div class="icon-header">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+            Zero Paywalls or Accounts
+          </div>
+          <p>Complete access to all 18 structured modules and downloadable practice templates without creating accounts or entering credit card details.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- MAIN COURSE TRACKS -->
+    <section class="section-head">
+      <h2>Structured Courses</h2>
+      <span class="count">4 CORE TRACKS</span>
+    </section>
+
+    <div class="tile-grid">
+      <a href="windows11.html" class="tile" style="--tile-color: #0078D4; --tile-soft: #E5F2FF;">
+        <div class="tile-icon">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M0 3.449L9.75 2.1v9.451H0m0 1.098h9.75V22.1L0 20.751M10.849 1.95L24 0v11.551H10.849m0 1.098H24V24l-13.151-1.95"/></svg>
+        </div>
+        <h3>Windows 11</h3>
+        <p class="tile-desc">Desktop organization, virtual workspaces, snap layouts, and system utilities.</p>
+      </a>
+
+      <a href="word.html" class="tile" style="--tile-color: #185ABD; --tile-soft: #E8F0FE;">
+        <div class="tile-icon">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6zM6 20V4h7v5h5v11H6z"/></svg>
+        </div>
+        <h3>Microsoft Word</h3>
+        <p class="tile-desc">Document structuring, automated headings, section management, and styles.</p>
+      </a>
+
+      <a href="excel.html" class="tile" style="--tile-color: #107C41; --tile-soft: #E6F4EA;">
+        <div class="tile-icon">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H9V8h8v5z"/></svg>
+        </div>
+        <h3>Microsoft Excel</h3>
+        <p class="tile-desc">Data analysis, XLOOKUP, Pivot Tables, dynamic formatting, and key formulas.</p>
+      </a>
+
+      <a href="powerpoint.html" class="tile" style="--tile-color: #C43E1C; --tile-soft: #FCE8E6;">
+        <div class="tile-icon">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/></svg>
+        </div>
+        <h3>PowerPoint</h3>
+        <p class="tile-desc">Slide Master templates, morph visual animation, deck structures, and graphics.</p>
+      </a>
+
+      <a href="howto.html" class="tile" style="--tile-color: #6B4FA0; --tile-soft: #F3E8FF;">
+        <div class="tile-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>
+        </div>
+        <h3>Fix-It Database</h3>
+        <p class="tile-desc">Immediate search solutions for common errors and formatting problems.</p>
+      </a>
+    </div>
+
+    <!-- DOWNLOADABLE RESOURCES -->
+    <section class="section-head">
+      <h2>Downloadable Practice Datasets</h2>
+      <span class="count">OFFICIAL TEMPLATES</span>
+    </section>
+
+    <div class="resource-grid">
+      <div class="resource-card">
+        <div class="resource-info">
+          <svg viewBox="0 0 24 24" fill="#107C41"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z"/></svg>
+          <div>
+            <strong style="font-size: 14px; color: var(--ink);">Excel Master Workbook</strong>
+            <p style="font-size: 12px; margin: 0; color: var(--ink-soft);">Practice XLOOKUP & Pivots (.xlsx)</p>
+          </div>
+        </div>
+        <a href="#" class="download-link" style="color: #107C41;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+          .XLSX
+        </a>
+      </div>
+
+      <div class="resource-card">
+        <div class="resource-info">
+          <svg viewBox="0 0 24 24" fill="#185ABD"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z"/></svg>
+          <div>
+            <strong style="font-size: 14px; color: var(--ink);">Word Report Structure</strong>
+            <p style="font-size: 12px; margin: 0; color: var(--ink-soft);">Section Breaks & Headers (.docx)</p>
+          </div>
+        </div>
+        <a href="#" class="download-link" style="color: #185ABD;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+          .DOCX
+        </a>
+      </div>
+
+      <div class="resource-card">
+        <div class="resource-info">
+          <svg viewBox="0 0 24 24" fill="#C43E1C"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z"/></svg>
+          <div>
+            <strong style="font-size: 14px; color: var(--ink);">PowerPoint Morph Kit</strong>
+            <p style="font-size: 12px; margin: 0; color: var(--ink-soft);">Animation Practice Deck (.pptx)</p>
+          </div>
+        </div>
+        <a href="#" class="download-link" style="color: #C43E1C;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+          .PPTX
+        </a>
+      </div>
+    </div>
+
+    <!-- VIDEO GUIDES -->
+    <section class="section-head">
+      <h2>Video Demonstrations</h2>
+      <span class="count">VISUAL LEARNING</span>
+    </section>
+
+    <div class="video-grid">
+      <div class="video-wrapper">
+        <iframe width="560" height="315" src="https://www.youtube.com/embed/KRwF94nQg5Q?si=JjiAWsWjqrCFy6VG" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+      </div>
+      <div class="video-wrapper">
+        <iframe width="560" height="315" src="https://www.youtube.com/embed/oTX-rINkrJc?si=-lkZxixxhVCCn58T" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ENTERPRISE FOOTER -->
+  <footer class="site-footer">
+    <div class="shell">
+      <div class="footer-grid">
+        
+        <!-- Column 1: Brand & Purpose -->
+        <div class="footer-col">
+          <div style="display: flex; align-items: center; gap: 8px; color: #FFFFFF; font-weight: 700; margin-bottom: 12px;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#0078D4" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px;">
+              <rect x="3" y="3" width="8" height="8" rx="1"/>
+              <rect x="13" y="3" width="8" height="8" rx="1"/>
+              <rect x="3" y="13" width="8" height="8" rx="1"/>
+              <rect x="13" y="13" width="8" height="8" rx="1"/>
+            </svg>
+            <span style="font-size: 16px;">Office Basics</span>
+          </div>
+          <p>An open educational resource engineered to eliminate workplace friction through structured training in Microsoft Office and Windows operating systems.</p>
+          <p style="font-size: 12px; color: #6B7280;">© 2026 Office Basics Learning Hub. Independent educational material.</p>
+        </div>
+
+        <!-- Column 2: Curriculum Links -->
+        <div class="footer-col">
+          <h4>Curriculum</h4>
+          <ul class="footer-links">
+            <li><a href="windows11.html">Windows 11 Masterclass</a></li>
+            <li><a href="word.html">Microsoft Word Specialist</a></li>
+            <li><a href="excel.html">Microsoft Excel Analytics</a></li>
+            <li><a href="powerpoint.html">PowerPoint Presentation</a></li>
+            <li><a href="howto.html">Fast Fix-It Database</a></li>
+          </ul>
+        </div>
+
+        <!-- Column 3: Platform & Privacy -->
+        <div class="footer-col">
+          <h4>Privacy & Security</h4>
+          <ul class="footer-links">
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Local Storage Standard</a></li>
+            <li><a href="#">Zero Cookie Tracking</a></li>
+            <li><a href="#">Open Template License</a></li>
+          </ul>
+        </div>
+
+        <!-- Column 4: Team & Socials -->
+        <div class="footer-col">
+          <h4>Connect with Our Team</h4>
+          <p>Follow our channels for weekly workflow updates and printable cheat sheets.</p>
+          <div class="social-buttons">
+            <a href="https://www.instagram.com/james.daudi.9231?igsh=MXFvMWF1cTZtOGh0cA==" target="_blank" class="social-btn" title="Instagram">
+              <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+            </a>
+            <a href="https://www.facebook.com/share/1EiwYu3VBD/" target="_blank" class="social-btn" title="Facebook">
+              <svg viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+            </a>
+            <a href="mailto:jamesdaudi2004@gmail.com" class="social-btn" title="Direct Email">
+              <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+            </a>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- FOOTER BOTTOM ROW -->
+      <div class="footer-bottom">
+        <div>
+          <span>Keyboard Shortcut Quick-Ref: </span>
+          <kbd>Ctrl</kbd> + <kbd>Z</kbd> Undo
+          <span style="margin: 0 8px;">•</span>
+          <kbd>Win</kbd> + <kbd>V</kbd> Clipboard History
+        </div>
+
+        <div class="status-badge">
+          <div class="status-dot"></div>
+          <span>Client-Side Local Network Active</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- JAVASCRIPT -->
+  <script>
+    // Hero Banner Slider
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.hero-slide');
+
+    function switchSlide() {
+      slides[currentSlide].classList.remove('active');
+      currentSlide = (currentSlide + 1) % slides.length;
+      slides[currentSlide].classList.add('active');
+    }
+
+    setInterval(switchSlide, 4500);
+
+    // Mobile Navigation Toggle
+    function toggleMobileMenu() {
+      const nav = document.getElementById('ribbonNav');
+      nav.classList.toggle('is-open');
+    }
+  </script>
+</body>
+</html>
